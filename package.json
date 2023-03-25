@@ -11,6 +11,8 @@
   "dependencies": {
     "immutable": "^4.1.0",
     "lodash": "^4.17.21",
+    "@ionic/react": "^6.0.0",
+    "@ionic/react-router": "^6.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
