@@ -14,6 +14,14 @@
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "noImplicitAny": true, // '"strict": true ' did not enforce this
+    // without this
+    // the type-system would be unsound as
+    // `tsc` would pretend indexed array items always exists which cannot be proven.
+    // i believe `tsc init` should have done this.
+    "noUncheckedIndexedAccess": true, 
+    // more likely a bug, than not
+    "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
     "moduleResolution": "Node",
