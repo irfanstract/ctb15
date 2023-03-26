@@ -9,7 +9,16 @@ import {
   TaskDesc ,
 } from "src/projects/ToDoListing" ;
 
+import * as ionIcons from "ionicons" ;
+
 import Button from "./Button";
+
+import {
+  IonList ,
+  IonReorderGroup ,
+  IonItem ,
+  IonReorder ,
+} from "@ionic/react" ;
 
 import TdlCss from "./TDL.module.css" ;
 
@@ -50,9 +59,23 @@ const tlcExemplaryTasksList = (
 const ToDoListComponent: (
   util.React.FC<(
     & { value: 3 | TaskDesc[] ; }
+    & Partial<{ 
+      
+      /** 
+       * optional action to run whenever "marrk as completed" gets clicked.
+       * can be omitted, in which case would avoid rendering such a button.
+       * 
+       */
+      onMarkItemAsCompleted: false | util.React.Dispatch<{ i: number ; }> ; 
+
+      onItemReorder: false | util.React.Dispatch<{ from: number ; to: number ; }> ;
+
+    }>
   )>
 ) = ({
   value: tasks0 ,
+  onMarkItemAsCompleted ,
+  onItemReorder: onItemReorder ,
 }) => {
   const {
     tasks ,
@@ -73,15 +96,35 @@ const ToDoListComponent: (
     })() 
   ) ;
   return (
-    <div className={`${TdlCss.ToDoList } ` }> 
+    <div className={`${TdlCss.ToDoList } md ` }> 
       <p>
         To-Do List
       </p>
-      <ol>
+      <IonList
+      //
+      >
+      <IonReorderGroup
+      {...(
+        onItemReorder ?
+        {
+          disabled: false ,
+          onIonItemReorder: (e ) => {
+            onItemReorder(e.detail) ;
+            /** 
+             * need to have `complete(false)` eventually called, asynchronously;
+             * `complete()` is *necessary*
+             * 
+             */
+            e.detail.complete(false) ;
+          } ,
+        }
+        : { disabled: true , }
+      )}
+      >
       {(
         tasks
         .map(desc => /* add UID */ ({ ...desc, uid: JSON.stringify(desc), }) ) 
-        .map((entry): util.React.ReactElement => {
+        .map((entry, entryOrdinal): util.React.ReactElement => {
           const {
             uid: tKey ,
             title: entryTitle = "",
@@ -123,20 +166,46 @@ const ToDoListComponent: (
             <PercentualCompletionalStatRender 
             value={(mDone === true) ? 1 : 0.5 }
             onMarkAsCompleted={(
-              (1 < mAssignees.length) ? false : (() => {})
+              // (1 < mAssignees.length) ? false : (() => {})
+              (() => {
+                B1:
+                {
+                  if ((1 < mAssignees.length)) {
+                    break B1 ;
+                  }
+                  if (onMarkItemAsCompleted) {
+                    return (
+                      () => {
+                        return (
+                          onMarkItemAsCompleted({
+                            i: entryOrdinal ,
+                          })
+                        ) ;
+                      }
+                    ) ;
+                  }
+                }
+                return false ;
+              })()
             )} // TODO
             />
           ) ;
           return (
-            <li key={tKey} >
+            <IonItem key={tKey} >
+            <IonReorder>
+              <code>#{ entryOrdinal }</code>
+            </IonReorder>
+            <div>
               { titleDisplay }
               { assignmentalDisplay }
               { completionalStatDisplay }
-            </li>
+            </div>
+            </IonItem>
           ) ;
         } )
       )}
-      </ol>
+      </IonReorderGroup>
+      </IonList>
     </div>
   ) ;
 } ;
@@ -177,6 +246,7 @@ const PercentualCompletionalStatRender: (
     (value < 1) && (
       markAsCompleted && (
         <Button
+        type="button"
         onClick={() => markAsCompleted()}
         >
           Mark As Completed
@@ -219,10 +289,52 @@ export const ToDoListDemoComponent = (
         util.React.ComponentProps<typeof ToDoListComponent>["value"] & {}[]
       )>(tlcExemplaryTasksList)
     ) ;
+    function markNthItemAsDone(i: number): void;
+    function markNthItemAsDone(assignedItemOrdinal: number): void {
+      setValue(list0 => (
+        list0
+        .map((item, iteratedItemOrdinal) => {
+          if (iteratedItemOrdinal === assignedItemOrdinal) {
+            return { ...item, done: true, } ;
+          }
+          return item ;
+        })
+      )) ;
+    }
+    function reorderItems(...args: [
+      { from: number ; to: number ; } ,
+    ]): void;
+    function reorderItems(...[
+      { from: srcIndex, to: destinedIndex, }
+    ]: [
+      { from: number ; to: number ; } ,
+    ]): void {
+      setValue(ls0 => (
+        [...util.Immutable.List(ls0).remove(srcIndex).insert(destinedIndex, ls0[srcIndex]!) ]
+      ) ) ;
+    }
     return (
+      <div>
       <ToDoListComponent 
       value={value}
+      onMarkItemAsCompleted={({
+        i: i ,
+      }) => {
+        markNthItemAsDone(i) ;
+      }}
+      onItemReorder={e => {
+        reorderItems(e) ;
+      }}
       />
+      <p>
+        <Button
+        type="button"
+        onClick={() => setValue(() => tlcExemplaryTasksList) }
+        >
+          Reset 
+        </Button>
+      </p>
+      </div>
     ) ;
   }
 ) ;
