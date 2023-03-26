@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import * as Assert from "assert";
+import * as util from "src/utility-functions/all" ;
+import ToDoListComponent from 'src/projects/ToDoListComponent';
+import { ToDoListDemoComponent, } from 'src/projects/ToDoListComponent';
+import JFrameR from './projects/JFrame';
+//
 import './App.css'
 
 function App() {
@@ -18,9 +24,11 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <button onClick={() => { setCount((count) => count + 1) ; }}>
           count is {count}
         </button>
+        <ToDoListDemoComponent />
+        <JFrameR />
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>

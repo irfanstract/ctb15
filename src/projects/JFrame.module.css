@@ -1,0 +1,63 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.JFrame {}
+
+
+
+
+.Menubar {
+  display: flex;
+  flex-direction: row;
+}
+
+
+
+
+
+
+
+.PopupCd2 {
+  display: block;
+  position: relative;
+  transition: all 1s ease-out;
+  overflow-block: hidden;
+  overflow: hidden;
+}
+.PopupCd2 {
+  max-block-size: 0em; 
+  opacity: 0;
+}
+.Popup:focus-within > .PopupCd2 {
+  max-block-size: 30em; 
+  opacity: 1;
+  display: block;
+}
+
+.PopupItemsContainer {
+  padding-inline-start: 0.5em;
+  font-size: 90% ;
+  padding-block-end: 0.75em;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+
+
+
+
+
+
