@@ -1,0 +1,70 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.JFrame {}
+
+.JFramecontent {}
+
+
+
+
+.Menubar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+
+
+
+
+
+
+.Popup {
+  text-align: start;
+}
+
+.PopupItemsContainer {
+  padding-inline-start: 0.5em;
+  font-size: 90% ;
+  padding-block-end: 1.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-items: stretch;
+}
+.PopupItemsContainer > * {
+  background: transparent;
+  /* flex: 1 1 auto; */
+}
+
+.PopupElMetaCtrlBtn {}
+
+.PopupBpv {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-items: stretch;
+}
+
+
+
+
+
+
+
+
+
+
