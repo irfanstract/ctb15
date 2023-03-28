@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "immutable": "^4.1.0",
+    "jszip": "^3.10.1",
+    "@xmldom/xmldom": "^0.8.6",
     "lodash": "^4.17.21",
     "@ionic/react": "^6.0.0",
     "@ionic/react-router": "^6.0.0",
