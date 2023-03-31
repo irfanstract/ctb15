@@ -1,6 +1,15 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import * as Assert from "assert";
+import * as util from "src/utility-functions/all" ;
+import ToDoListComponent from 'src/projects/ToDoListComponent';
+import { ToDoListDemoComponent, } from 'src/projects/ToDoListComponent';
+import JFrame from 'src/projects/jframes/FileEditViewWindowComponent';
+import JFrameUndoRedoBtnDemoComp from 'src/projects/jframes/ContentUndoRedoDemoApp';
+import EmAsyncifyExample from "src/projects/em_asyncify_example.out.wasm?init" ;
+import emAsyncifyExampleAgain from "src/projects/em_asyncify_example1" ; //
+//
 import './App.css'
 
 function App() {
@@ -18,9 +27,11 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <button onClick={() => { setCount((count) => count + 1) ; }}>
           count is {count}
         </button>
+        <ToDoListDemoComponent />
+        <IJFrameDemo />
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
@@ -32,4 +43,41 @@ function App() {
   )
 }
 
+const IJFrameDemo = (
+  JFrameUndoRedoBtnDemoComp
+) ;
+
 export default App
+
+null || (async () => {
+  type IWeav = WebAssembly.ExportValue ;
+  if (0) {
+    ;
+    const { main, } = (
+      (
+        (await EmAsyncifyExample({
+          imports: {
+            // a: () => { throw new Error("imports.a"); }, 
+            // a: {
+            //   // modules: {} ,
+            //   a: () => { throw new Error("imports.a"); } ,
+            // } ,
+            get a(): never { throw new Error("imports.a"); } ,
+          } ,
+        }))
+        .exports
+      ) satisfies WebAssembly.Exports
+    ) ;
+    console["log"]({ main, }) ; //
+  }
+  if (1) {
+    ;
+    const m = emAsyncifyExampleAgain ;
+    console["log"]({ m, }) ;
+    (async () => {
+      const exp = await emAsyncifyExampleAgain() ;
+      console["log"]({ exp, }) ;
+    } )() ;
+  }
+  // import("src/projects/em_asyncify_examplem.cjs");
+})();
