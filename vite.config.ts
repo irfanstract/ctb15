@@ -8,6 +8,11 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: 'src', replacement: path.resolve(__dirname, 'src') },
+      { find: 'dist', replacement: path.resolve(__dirname, 'dist'), },
+      { find: ('public'  ), replacement: path.resolve(__dirname, ('public'  ), ), },
+      { find: ('share'   ), replacement: path.resolve(__dirname, ('share'   ), ), },
+      { find: 'node_modules', replacement: path.resolve(__dirname, 'node_modules') },
+      { find: '.node_modules', replacement: path.resolve(__dirname, '.node_modules') },
     ],
   },
 })
