@@ -64,22 +64,53 @@ export const FoldedMenuComp = (
       isOpen ,
       currentlyJFrameController, 
     } = exports ;
-    const openingButton = (
-      <CallbackButton
-      onClick={(e) => {
-        isOpen() ? setExpanded(false) : setExpanded1(e.nativeEvent) ;
-      }}
+    const headingBtn = (
+      <Button
+      id={eId + "-OpeningTrigger" }
+      className={`${JFrameCss.PopupElMetaCtrlBtn } ` }
+      type="button"
       >
         { label } <Ionic.Icon icon={ionIcons.ellipsisVertical } />
+      </Button>
+    ) ;
+    const closingBtn = (
+      <CallbackButton 
+      className={`${JFrameCss.PopupElMetaCtrlBtn } ` }
+      onClick={(
+        expndElemRefed ? (() => expndElemRefed.dismiss()) : undefined
+      )}
+      >
+        cancel
       </CallbackButton>
     ) ;
     const popupContents = (
-      <div className={` ${JFrameCss.PopupItemsContainer } `}>
+      <div 
+      className={` ${JFrameCss.PopupItemsContainer } `}
+      onClick={e => {
+        const srcEl = (
+          (e.target as Element)
+        ) ;
+        const shallClose = (
+          srcEl.matches(`button, a, ion-button, ion-nav-link`) &&
+          !srcEl.matches("." + JFrameCss.PopupElMetaCtrlBtn ) &&
+          !srcEl.matches(`*:disabled`)
+        ) satisfies boolean ;
+        if (shallClose === false ) {
+          // return ;
+        } else {
+          expndElemRefed && expndElemRefed.dismiss() ;
+        }
+      }}
+      >
         { (() => {
           const itemsFinal = (
             // used to insert additional divider at the end, but
             // removed it for being unsemantic
-            [...util.React.Children.toArray(items) , ]
+            [
+              ...util.React.Children.toArray(items) , 
+              <Ionic.IonItemDivider />,
+              closingBtn ,
+            ]
           ) ;
           return (
             itemsFinal
@@ -94,9 +125,11 @@ export const FoldedMenuComp = (
         // setExpanded(e.currentTarget) ;
       } }
       >
-        { openingButton }
+        { headingBtn }
         <Ionic.IonPopover
         ref={expndElemRefUpdate }
+        trigger={eId + "-OpeningTrigger" }
+        showBackdrop={false }
         >
           { popupContents }
         </Ionic.IonPopover>

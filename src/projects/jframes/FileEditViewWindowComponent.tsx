@@ -25,52 +25,70 @@ const JFrameComp = (
     editHandler ,
     undoManager ,
   }) => {
-    const menuBar = (
+    const windowMgmtMenuBar = (
       renderDemoMenuBar({
         editHandler ,
         undoManager ,
       })
     ) ;
+    const debugSideBar = (
+      <Ionic.ToolBar>
+        <button>
+          24 lines
+        </button>
+        <button>
+          24 lines
+        </button>
+      </Ionic.ToolBar>
+    ) ;
     const mainContent = (
       <div>
-        <Ionic.ToolBar>
-          <CallbackButton 
-          children={<Ionic.Icon icon={ionIcons.arrowUndo } /> }
-          onClick={undoManager?.undo }
-          />
-          <CallbackButton
-          children={<Ionic.Icon icon={ionIcons.arrowRedo } /> }
-          onClick={undoManager?.redo }
-          />
-          <CallbackButton 
-          children={<Ionic.Icon icon={ionIcons.cut } /> }
-          onClick={editHandler?.invokeCut }
-          />
-          <CallbackButton 
-          children={<Ionic.Icon icon={ionIcons.copy } /> }
-          onClick={editHandler?.invokeCopy }
-          />
-          <CallbackButton 
-          children={<Ionic.Icon icon={ionIcons.clipboard } /> }
-          onClick={editHandler?.invokePaste }
-          />
-        </Ionic.ToolBar>
-        <div>
-          <p>
-            User Content Goes Here
-          </p>
-          <p>
-            User Content Goes Here
-          </p>
-          <p>
-            User Content Goes Here
-          </p>
-          <p>
-            User Content Goes Here
-          </p>
-          <p>
-            User Content Goes Here
-          </p>
+        <p>
+          User Content Goes Here
+        </p>
+        <p>
+          User Content Goes Here
+        </p>
+        <p>
+          User Content Goes Here
+        </p>
+        <p>
+          User Content Goes Here
+        </p>
+        <p>
+          User Content Goes Here
+        </p>
+      </div>
+    ) ;
+    const frequentToolsBar = (
+      <Ionic.ToolBar>
+        <CallbackButton 
+        children={<Ionic.Icon icon={ionIcons.arrowUndo } /> }
+        onClick={undoManager?.undo }
+        />
+        <CallbackButton
+        children={<Ionic.Icon icon={ionIcons.arrowRedo } /> }
+        onClick={undoManager?.redo }
+        />
+        <CallbackButton 
+        children={<Ionic.Icon icon={ionIcons.cut } /> }
+        onClick={editHandler?.invokeCut }
+        />
+        <CallbackButton 
+        children={<Ionic.Icon icon={ionIcons.copy } /> }
+        onClick={editHandler?.invokeCopy }
+        />
+        <CallbackButton 
+        children={<Ionic.Icon icon={ionIcons.clipboard } /> }
+        onClick={editHandler?.invokePaste }
+        />
+      </Ionic.ToolBar>
+    ) ;
+    const nonSidebarContent = (
+      <div>
+        { frequentToolsBar }
+        <div className="JFrameContent" >
+        { mainContent }
         </div>
       </div>
     ) ;
@@ -100,17 +118,23 @@ const JFrameComp = (
       >
       <div
       id={cssId + "-c"}
-      style={{
-        display: "flex" ,
-        flexDirection: "column-reverse" ,
-      }}
       >
-      <div>
-        { mainContent }
-      </div>
-      <div>
-        { menuBar }
-      </div>
+        <div
+        style={{
+          display: "flex" ,
+          flexDirection: "column-reverse" ,
+        }}
+        >
+          <div style={{ order: -5000, }} >
+            { nonSidebarContent }
+          </div>
+          <div style={{ order: -1000, }} >
+            { windowMgmtMenuBar }
+          </div>
+          <div style={{ order: -9000, }} >
+            { debugSideBar }
+          </div>
+        </div>
       </div>
       </div>
       </WithGivenAssociatedJFrame>
@@ -205,8 +229,12 @@ const renderDemoMenuBar: {
         <Button 
         children={"Open"} 
         />
-        <Button 
+        <CallbackButton 
         children={"Save"} 
+        />
+        <Ionic.IonItemDivider />
+        <CallbackButton 
+        children={"Close"} 
         />
       </FoldedMenuComp>
       <FoldedMenuComp 

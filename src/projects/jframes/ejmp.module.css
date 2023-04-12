@@ -15,6 +15,8 @@
 
 .JFrame {}
 
+.JFramecontent {}
+
 
 
 
@@ -45,7 +47,10 @@
 }
 .PopupItemsContainer > * {
   background: transparent;
+  /* flex: 1 1 auto; */
 }
+
+.PopupElMetaCtrlBtn {}
 
 .PopupBpv {
   display: flex;

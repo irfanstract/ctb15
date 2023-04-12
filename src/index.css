@@ -68,6 +68,12 @@ button:focus-visible {
   text-align: start;
   inline-size: calc(min(100%, 28em ) ) ;
 }
+.JFrameContent {
+  border: 0.05em solid currentColor;
+  border-radius: 0.5em;
+  padding: 0.5em;
+  text-align: start;
+}
 
 .ToDoList {
   border: 0.05em solid currentColor;
