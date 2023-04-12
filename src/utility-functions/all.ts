@@ -16,9 +16,6 @@ export { Immutable, };
 import * as _ from "lodash";
 export { _, } ;
 
-import * as React from 'react';
-export { React, } ;
-
 
 
 
