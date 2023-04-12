@@ -12,6 +12,10 @@ import * as util from "src/utility-functions/all" ;
 
 export default (
   util.React.forwardRef<{}, {}>(function SvpRender() {
+    const {
+      hoverPos ,
+      setHoverPos ,
+    } = useXHoverState() ;
     return (
       <svg 
       className={`SvpMain ` }
@@ -19,38 +23,60 @@ export default (
       style={{
       }}
       children={(
-        <HoverMnComp />
+        <HoverMnComp 
+        onPointerLeave={() => {
+          setHoverPos(false) ;
+        } }
+        onPointerMoveRelative={(evt) => {
+          const pos = (
+            evt.newPos
+          ) ;
+          setHoverPos(pos );
+        }}
+        />
       )}
       />
     ) ;
   })
 ) ;
 const HoverMnComp = (
-  util.React.forwardRef<{}, {}>(function SvpRender() {
-    const [pos, setPos] = (
-      util.React.useState<{ x: number ; y: number ; } | false>(false)
-    ) ;
-    const [e, setE] = (
-      util.React.useState<SVGElement | false>(false)
-    ) ;
+  util.React.forwardRef<(
+    & {}
+  ), (
+    & {
+      onPointerMoveRelative?: (
+        util.React.Dispatch<{ 
+          newPos: DOMPoint ; 
+        }> 
+      ) ;
+      onPointerLeave?: (
+        util.React.Dispatch<{ 
+        }> 
+      ) ;
+    }
+  )>(function SvpRender(...[
+    {
+      onPointerMoveRelative: propagatePointerMoveEvt = util._.identity ,
+      onPointerLeave: propagatePointerLeaveEvt = util._.identity ,
+    } ,
+  ]) {
     const onMouseExitImpl = (
       () => {
-        setPos(false) ;
+        propagatePointerLeaveEvt({}) ;
         ;
       }
     ) ;
     const handlePointerMovement = (
       (evt => {
         evt.currentTarget.childNodes ;
-        setE(evt.currentTarget ?? false) ;
-        const ctm = (
-          getCtmImpl(evt.currentTarget, "getScreenCTM")
+        const {
+          relativePos: evtRelativePos ,
+        } = (
+          getPointEvtCoordsInfo(evt)
         ) ;
-        const m1 = (
-          DOMPoint.fromPoint({ x: evt.clientX, y: evt.clientY, })
-        ) ;
-        const m2 = m1.matrixTransform(DOMMatrix.fromMatrix(ctm).inverse() ) ;
-        setPos({ x: m2.x, y: m2.y, }) ;
+        propagatePointerMoveEvt({ 
+          newPos: Object.freeze(evtRelativePos), 
+        }) ;
         ;
       }) satisfies util.React.Dispatch<util.React.PointerEvent<SVGGraphicsElement> >
     ) ;
@@ -60,8 +86,6 @@ const HoverMnComp = (
         console["info"](TypeError(`mousedown detected`) ) ;
         if (1) {
           ;
-          1 && console["log"](`pos: `, pos, ) ;
-          0 && console["log"](`e: `, e, (e instanceof SVGGraphicsElement) && getCtmImpl(e, "getScreenCTM"), ) ;
           1 && console["log"](`client-pos: `, { x: evt.clientX, y: evt.clientY, }, ) ;
           ;
         }
@@ -86,6 +110,17 @@ const HoverMnComp = (
     ) ;
   })
 ) ;
+const useXHoverState = (
+  (() => {
+    const [hoverPos, setHoverPos] = (
+      util.React.useState<{ x: number ; y: number ; } | false>(false)
+    ) ;
+    return {
+      hoverPos ,
+      setHoverPos ,
+    } ;
+  }) satisfies (() => {})
+) ;
 
 /** 
  * {@link SVGGraphicsElement.getScreenCTM } or 
@@ -102,6 +137,33 @@ const getCtmImpl = (
       mode: keyof Pick<SVGGraphicsElement, "getScreenCTM" | "getCTM">
     ]): DOMMatrix ;
   }
+) ;
+
+const getPointEvtCoordsInfo = (
+  (evt: util.React.PointerEvent<SVGGraphicsElement>) => {
+    ;
+    const ctm = (
+      getCtmImpl(evt.currentTarget, "getScreenCTM")
+    ) ;
+    const clientPos = (
+      DOMPoint.fromPoint({ x: evt.clientX, y: evt.clientY, })
+    ) ;
+    const relativePos = (
+      clientPos
+      .matrixTransform(DOMMatrix.fromMatrix(ctm).inverse() )
+    ) ;
+    return {
+      ctm ,
+      clientPos ,
+      relativePos ,
+    } ;
+  }
+) ;
+const getPointEvtRelativePos = (
+  (evt: util.React.PointerEvent<SVGGraphicsElement>) => (
+    getPointEvtCoordsInfo(evt)
+    .relativePos
+  )
 ) ;
 
 
