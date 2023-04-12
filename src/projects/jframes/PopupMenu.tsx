@@ -1,6 +1,11 @@
 
 import * as util from "src/projects/jframes/util" ;
 
+import {
+  XJSX ,
+  isXReactElement ,
+} from "./IonicElementJsx" ;
+
 
 
 
@@ -16,6 +21,14 @@ import { OpButton, } from "src/projects/jframes/util";
 
 import { Ionic, } from "src/projects/jframes/util";
 
+function isControllerForButtonlike(main: Element): boolean ;
+function isControllerForButtonlike(srcElemController: Element) {
+  return (
+    srcElemController.matches(`button, a, ion-button, ion-nav-link, ion-item[button]`)
+  ) ;
+}
+
+import { renderIonicItemFromElement, } from "./IonicElementJsx";
 
 
 
@@ -42,125 +55,277 @@ type FoldedMenuCompController = (
   & { setExpandedDueToEvent(...args: Parameters<HTMLIonPopoverElement["present"]>): void ; }
   & { isExpanded(): boolean ; }
 );
-export const FoldedMenuComp = (
-  util.React.forwardRef(function GroupingMenuRImpl(...[
-    {
-      header: label ,
-      children: items ,
-    } , 
-    exportsCb  ,
-  ] : [
+export const {
+  PlainFoldedMenuComp ,
+  IonFoldedMenuComp ,
+} = (() => {
+  const getRenderer = (({
 
-    props: (
-      & { header: null | string | number | util.React.ReactElement ; }
-      & Required<util.React.PropsWithChildren>
-    ), 
-    ref: util.React.ForwardedRef<(
-      FoldedMenuCompController
-    )>  ,
+    asProperlyDecoratedItem ,
+    renderButtonlikeItemComp ,
     
-  ]) {
-    const intendedControllerId = (
-      util.React.useId()
-    ) ;
-    const [
-      exports ,
-      { expndElemRefUpdate, } ,
-    ] = useXController1() ;
-    util.React.useImperativeHandle(exportsCb, () => exports, [exports,]) ;
-    const { 
-      expndElemRefed, 
-      setExpanded, 
-      setExpandedDueToEvent, 
-      isExpanded ,
-      currentlyJFrameController, 
-    } = exports ;
-    const headingBtn = (
-      <Button
-      id={intendedControllerId + "-OpeningTrigger" }
-      className={`${JFrameCss.PopupElMetaCtrlBtn } ` }
-      type="button"
-      >
-        { label } <Ionic.Icon icon={ionIcons.ellipsisVertical } />
-      </Button>
-    ) ;
-    const closingBtn = (
-      <OpButton 
-      className={`${JFrameCss.PopupElMetaCtrlBtn } ` }
-      onClick={(
-        expndElemRefed ? (() => expndElemRefed.dismiss()) : undefined
-      )}
-      >
-        cancel
-      </OpButton>
-    ) ;
-    const itemsFinal = (
-      // has additional divider at the end
-      [
-        ...util.React.Children.toArray(items) , 
-        <Ionic.IonItemDivider />,
-        closingBtn ,
-      ]
-    ) ;
-    const popupContents = (
-      <div 
-      className={` ${JFrameCss.PopupItemsContainer } `}
-      onClick={e => {
-        const {
-          srcElemController: srcEl ,
-          isClickOnEnabledAppItem ,
-          shallCauseCollapse ,
-        } = analysePopoverClickEvt(e) ;
-        if (shallCauseCollapse === false ) {
-          // return ;
-        } else {
-          expndElemRefed && expndElemRefed.dismiss() ;
-        }
-      }}
-      >
-        { itemsFinal }
-      </div>
-    ) ;
-    const analysePopoverClickEvt = ((...[e]) => {
-      ;
-      const srcElemController = (
-        (e.target as Element)
+    deservesManualAutoDismiss ,
+
+  } ) => (
+    util.React.forwardRef(function GroupingMenuRImpl(...[
+      {
+        header: label ,
+        children: items ,
+      } , 
+      exportsCb  ,
+    ] : [
+  
+      props: (
+        & { header: null | string | number | util.React.ReactElement ; }
+        & Required<util.React.PropsWithChildren>
+      ), 
+      ref: util.React.ForwardedRef<(
+        FoldedMenuCompController
+      )>  ,
+      
+    ]) {
+      const designatedId = (
+        util.React.useId()
       ) ;
-      const isClickOnEnabledAppItem = (
-        srcElemController.matches(`button, a, ion-button, ion-nav-link`) &&
-        !isControllerForPopupMenuMetaBtn(srcElemController) &&
-        !util.isControlledElementDisabled(srcElemController)
-      ) satisfies boolean ;
-      const shallCauseCollapse = (
-        isClickOnEnabledAppItem
-      ) satisfies boolean ;
-      return {
-        srcElemController ,
-        isClickOnEnabledAppItem ,
-        shallCauseCollapse ,
-      } ;
-    }) satisfies { 
-      (...a: Parameters<JSX.IntrinsicElements["div"]["onClick"] & Function>): object ; 
-    } ;
-    return (
-      <div 
-      className={`${JFrameCss.Popup } ${JFrameCss.PopupBpv } ` }
-      onBlur={e => {
-        // setExpanded(e.currentTarget) ;
-      } }
-      >
-        { headingBtn }
+      const [
+        exports ,
+        { expndElemRefUpdate, } ,
+      ] = useXController1() ;
+      util.React.useImperativeHandle(exportsCb, () => exports, [exports,]) ;
+      const { 
+        expndElemRefed, 
+        setExpanded, 
+        setExpandedDueToEvent, 
+        isExpanded ,
+        currentlyJFrameController, 
+      } = exports ;
+      const closeBtnCallback = (
+        expndElemRefed ? (() => expndElemRefed.dismiss()) : undefined
+      ) ;
+      /** 
+       * the "heading", also the "anchour"
+       * 
+       */
+      const headingBtn = (
+        renderButtonlikeItemComp({
+          id: designatedId + "-OpeningTrigger" ,
+          className: `${JFrameCss.PopupElMetaCtrlBtn } ` ,
+          onClick: ONCLICK_IONIC_POP ,
+          children: label ,
+        })
+      ) ;
+      /** 
+       * the "close" btn
+       */
+      const closingBtn = (
+        renderButtonlikeItemComp({
+          className: `${JFrameCss.PopupElMetaCtrlBtn } ` ,
+          onClick: closeBtnCallback ,
+          children: <>cancel</> ,
+        })
+      ) ;
+      const itemsFinal = (
+        // has additional divider at the end
+        [
+          ...(
+            util.React.Children.toArray(items)
+            .map(e => (
+              asProperlyDecoratedItem(<>{e }</> ) 
+            ) )
+          ) , 
+          <Ionic.IonItemDivider />,
+          asProperlyDecoratedItem(closingBtn) ,
+        ]
+      ) ;
+      /** 
+       * the contents of the popup
+       */
+      const popupContents = (
+        <div 
+        className={` ${JFrameCss.PopupItemsContainer } `}
+        onClick={e => {
+          if (deservesManualAutoDismiss) {
+            ;
+            const {
+              srcElemController: srcEl ,
+              isClickOnEnabledAppItem ,
+              shallCauseCollapse ,
+            } = analysePopoverClickEvt(e) ;
+            if (shallCauseCollapse === false ) {
+              // return ;
+            } else {
+              closeBtnCallback && closeBtnCallback() ;
+            }
+          }
+        }}
+        >
+          { itemsFinal }
+        </div>
+      ) ;
+      /** 
+       * the `IonPopover`
+       */
+      const popupible = (
         <Ionic.IonPopover
         ref={expndElemRefUpdate }
-        trigger={intendedControllerId + "-OpeningTrigger" }
+        trigger={designatedId + "-OpeningTrigger" }
         showBackdrop={false }
+        dismissOnSelect={deservesManualAutoDismiss === false}
         >
           { popupContents }
         </Ionic.IonPopover>
-      </div>
-    ) ;
-  })
+      ) ;
+      const analysePopoverClickEvt = ((...[e]) => {
+        ;
+        const srcElemController = (
+          (e.target as Element)
+        ) ;
+        const isClickOnEnabledAppItem = (
+          isControllerForButtonlike(srcElemController) &&
+          !isControllerForPopupMenuMetaBtn(srcElemController) &&
+          !util.isControlledElementDisabled(srcElemController)
+        ) satisfies boolean ;
+        const shallCauseCollapse = (
+          isClickOnEnabledAppItem
+        ) satisfies boolean ;
+        return {
+          srcElemController ,
+          isClickOnEnabledAppItem ,
+          shallCauseCollapse ,
+        } ;
+      }) satisfies { 
+        (...a: Parameters<JSX.IntrinsicElements["div"]["onClick"] & Function>): object ; 
+      } ;
+      return (
+        <div 
+        className={`${JFrameCss.Popup } ${JFrameCss.PopupBpv } ` }
+        onBlur={e => {
+          // setExpanded(e.currentTarget) ;
+        } }
+        >
+          { headingBtn }
+          { popupible }
+        </div>
+      ) ;
+    })
+  )) satisfies {
+    (options: (
+      {}
+      & {
+    
+        /** 
+         * when used as child of plain `div` with `display: flex` no wrapping would be necessary ;
+         * when used as child of `ion-list` it'd be necessary to wrap it with `ion-item` ;
+         * 
+         */
+        asProperlyDecoratedItem: {
+          (...args: [
+            util.React.ReactElement, // can't use ReactNode, see the sgn for ReactChildrenToArray
+          ]): util.React.ReactElement ;
+        } ;
+  
+        /** 
+         * when used as child of plain `div` with `display: flex` that'd be regular `<button>` or `<ion-button>` ;
+         * when used as child of `ion-list` it'd need to be `<ion-item is-button>` ;
+         * 
+         */
+        renderButtonlikeItemComp: {
+          (props: (
+            & Omit<(
+              & util.React.ComponentPropsWithoutRef<"button" >
+              & util.React.ComponentPropsWithoutRef<typeof OpButton >
+              & util.React.ComponentPropsWithoutRef<typeof Ionic.Button >
+              & util.React.ComponentPropsWithoutRef<typeof Ionic.IonItem >
+            ), "children" | "onClick" >
+            & util.React.PropsWithChildren
+            & {
+              onClick ?: undefined | (typeof ONCLICK_IONIC_POP) | (() => void) ;
+            }
+          )): util.React.ReactElement ;
+        } ;
+
+        /** 
+         * 
+         * @see `<ion-popover>`
+         */
+        deservesManualAutoDismiss: boolean ;
+  
+      }
+    )) : util.React.FC<any> ;
+  } ;
+  return {
+    PlainFoldedMenuComp: getRenderer({
+
+      asProperlyDecoratedItem: (e) => e ,      
+      renderButtonlikeItemComp: ({
+        children: usrLabel ,
+        onClick ,
+        ...props
+      }) => {
+        const label = (
+          <>
+          { usrLabel } <Ionic.Icon icon={ionIcons.ellipsisVertical } />
+          </>
+        ) ;
+        if (onClick === ONCLICK_IONIC_POP) {
+          return (
+            <button type="button" {...props} children={label} /> 
+          ) ;
+        }
+        return (
+          <OpButton onClick={onClick } {...props} children={label} /> 
+        ) ;
+      } ,
+
+      deservesManualAutoDismiss: true ,
+
+    }) ,
+    IonFoldedMenuComp: getRenderer({
+      
+      asProperlyDecoratedItem: (
+        e => renderIonicItemFromElement(e)
+      ) ,
+      renderButtonlikeItemComp: ({
+        children: usrLabel ,
+        onClick ,
+        ...props
+      }) => {
+        const label = (
+          <>
+          { usrLabel } <Ionic.Icon icon={ionIcons.ellipsisVertical } />
+          </>
+        ) ;
+        if (onClick === ONCLICK_IONIC_POP) {
+          return (
+            <Ionic.Item button type="button" {...props} children={label} /> 
+          ) ;
+        }  
+        return (
+          <Ionic.Item button type="button" onClick={onClick } {...props} children={label} /> 
+        ) ;
+      } ,
+
+      deservesManualAutoDismiss: true ,
+      
+    }) ,
+  } ;
+})() ;
+export const FoldedMenuComp = (
+  IonFoldedMenuComp
 ) ;
+/** 
+ * rather than passing a `function`,
+ * pass this special-value, causing the resulting button to be "ionic"
+ * 
+ * ```
+ * <div>
+ *  <button id="popup-trigger" />
+ *  <ion-popover trigger="popup-trigger" ... />
+ * </div>
+ * ```
+ * 
+ */
+const ONCLICK_IONIC_POP = Symbol() ;
 const useXController1 = () => {
   const {
     WithAssociatedJFrame ,

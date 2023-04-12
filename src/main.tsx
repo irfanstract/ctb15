@@ -3,7 +3,17 @@ import ReactDOM from 'react-dom/client'
 import 'src/setupIonicReact1'
 import { IonApp, IonContent, } from '@ionic/react' 
 import App from './App'
+// import * as assert from "assert" ;
+// (assert as (typeof assert extends infer O ? { [k in keyof O ]: O[k] } : never )).ok = (v, m) => {
+//   if (v) {
+//     //
+//   } else {
+//     if (m instanceof Error) throw m ;
+//     throw new Error(m) ;
+//   }
+// } ;
 import './index.css'
+
 
 /** 
  * an Error Boundary which will show a "complaint and restart" btn for Exception(s)

@@ -6,6 +6,16 @@
 
 
 import * as util from "src/utility-functions/all" ;
+export namespace assert {
+  export const ok: typeof import("assert").ok = (v, m) => {
+    if (v) {
+      //
+    } else {
+      if (m instanceof Error) throw m ;
+      throw new Error(m) ;
+    }
+  } ;
+} ;
 import {
   ConjunctionFromAlternation ,
   AsEachAsAcceptor ,

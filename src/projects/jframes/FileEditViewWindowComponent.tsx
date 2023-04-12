@@ -18,6 +18,8 @@ import { OpButton, } from "src/projects/jframes/util";
 import { Ionic, } from "src/projects/jframes/util";
 
 import { FoldedMenuComp, } from "./PopupMenu";
+import { PlainFoldedMenuComp, } from "./PopupMenu";
+import { IonFoldedMenuComp, } from "./PopupMenu";
 
 const JFrameComp = (() => {
   return (
