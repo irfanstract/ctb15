@@ -9,7 +9,16 @@ import {
   TaskDesc ,
 } from "src/projects/ToDoListing" ;
 
+import * as ionIcons from "ionicons" ;
+
 import Button from "./Button";
+
+import {
+  IonList ,
+  IonReorderGroup ,
+  IonItem ,
+  IonReorder ,
+} from "@ionic/react" ;
 
 import TdlCss from "./TDL.module.css" ;
 
@@ -59,11 +68,14 @@ const ToDoListComponent: (
        */
       onMarkItemAsCompleted: false | util.React.Dispatch<{ i: number ; }> ; 
 
+      onItemReorder: false | util.React.Dispatch<{ from: number ; to: number ; }> ;
+
     }>
   )>
 ) = ({
   value: tasks0 ,
   onMarkItemAsCompleted ,
+  onItemReorder: onItemReorder ,
 }) => {
   const {
     tasks ,
@@ -84,11 +96,31 @@ const ToDoListComponent: (
     })() 
   ) ;
   return (
-    <div className={`${TdlCss.ToDoList } ` }> 
+    <div className={`${TdlCss.ToDoList } md ` }> 
       <p>
         To-Do List
       </p>
-      <ol>
+      <IonList
+      //
+      >
+      <IonReorderGroup
+      {...(
+        onItemReorder ?
+        {
+          disabled: false ,
+          onIonItemReorder: (e ) => {
+            onItemReorder(e.detail) ;
+            /** 
+             * need to have `complete(false)` eventually called, asynchronously;
+             * `complete()` is *necessary*
+             * 
+             */
+            e.detail.complete(false) ;
+          } ,
+        }
+        : { disabled: true , }
+      )}
+      >
       {(
         tasks
         .map(desc => /* add UID */ ({ ...desc, uid: JSON.stringify(desc), }) ) 
@@ -159,15 +191,21 @@ const ToDoListComponent: (
             />
           ) ;
           return (
-            <li key={tKey} >
+            <IonItem key={tKey} >
+            <IonReorder>
+              <code>#{ entryOrdinal }</code>
+            </IonReorder>
+            <div>
               { titleDisplay }
               { assignmentalDisplay }
               { completionalStatDisplay }
-            </li>
+            </div>
+            </IonItem>
           ) ;
         } )
       )}
-      </ol>
+      </IonReorderGroup>
+      </IonList>
     </div>
   ) ;
 } ;
@@ -208,6 +246,7 @@ const PercentualCompletionalStatRender: (
     (value < 1) && (
       markAsCompleted && (
         <Button
+        type="button"
         onClick={() => markAsCompleted()}
         >
           Mark As Completed
@@ -262,6 +301,18 @@ export const ToDoListDemoComponent = (
         })
       )) ;
     }
+    function reorderItems(...args: [
+      { from: number ; to: number ; } ,
+    ]): void;
+    function reorderItems(...[
+      { from: srcIndex, to: destinedIndex, }
+    ]: [
+      { from: number ; to: number ; } ,
+    ]): void {
+      setValue(ls0 => (
+        [...util.Immutable.List(ls0).remove(srcIndex).insert(destinedIndex, ls0[srcIndex]!) ]
+      ) ) ;
+    }
     return (
       <div>
       <ToDoListComponent 
@@ -271,9 +322,13 @@ export const ToDoListDemoComponent = (
       }) => {
         markNthItemAsDone(i) ;
       }}
+      onItemReorder={e => {
+        reorderItems(e) ;
+      }}
       />
       <p>
         <Button
+        type="button"
         onClick={() => setValue(() => tlcExemplaryTasksList) }
         >
           Reset 
