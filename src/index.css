@@ -64,6 +64,16 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+details { 
+  margin: 0.25em;
+  border: 0.1em solid currentColor;
+  border-radius: 0.25em;
+  font-size: 90%;
+}
+details > * { 
+  font-size: 90%;
+}
+
 ion-list {
   zoom: 90% ;
 }

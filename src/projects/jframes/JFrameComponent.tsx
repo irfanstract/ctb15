@@ -125,24 +125,6 @@ export default JFrameComp ;
 
 
 
-const useJFrameImplMasterControllerImplement = (
-  ((...[{} = {}]) => (
-    util.React.useMemo<JFrameController>(() => (
-      new (class implements JFrameController {
-        closeAllPopups = () => (
-          this.registeredPopupControllerSet
-          .forEach(c => c.dismiss() )
-        ) ;
-        registeredPopupControllerSet = (
-          new Set<HTMLIonPopoverElement>()
-        ) ;
-      })
-    ), [])
-  )) satisfies {
-    (options ?: {}): unknown ;
-  }
-) ;
-
 interface JFrameController {
   registeredPopupControllerSet: Set<HTMLIonPopoverElement> ;
   closeAllPopups: () => void ;
@@ -170,6 +152,27 @@ export const {
   WithAssociatedJFrame ,
   useCurrentAssociatedJFrame ,
 } = componentTreeJFrameAssocs ;
+
+/** 
+ * 
+ */
+const useJFrameImplMasterControllerImplement = (
+  ((...[{} = {}]) => (
+    util.React.useMemo<JFrameController>(() => (
+      new (class implements JFrameController {
+        closeAllPopups = () => (
+          this.registeredPopupControllerSet
+          .forEach(c => c.dismiss() )
+        ) ;
+        registeredPopupControllerSet = (
+          new Set<HTMLIonPopoverElement>()
+        ) ;
+      })
+    ), [])
+  )) satisfies {
+    (options ?: {}): unknown ;
+  }
+) ;
 
 
 

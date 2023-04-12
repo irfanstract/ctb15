@@ -7,7 +7,7 @@ import * as util from "src/utility-functions/all" ;
 import ToDoListComponent from 'src/projects/ToDoListComponent';
 import { ToDoListDemoComponent, } from 'src/projects/ToDoListComponent';
 import JFrame from 'src/projects/jframes/FileEditViewWindowComponent';
-import { useUndoableState, } from 'src/projects/jfu/undo-stacking';
+import { useUndoableState, useUndoRedoStack, } from 'src/projects/jfu/undo-stacking';
 import { UndoOrRedoStack, UndoRedoHeadStack, } from 'src/projects/jfu/undo-stacking';
 
 
@@ -43,12 +43,17 @@ const JFrameUndoRedoBtnDemoComp1 = () => {
 } ;
 const JFrameUndoRedoBtnDemoComp = (
   () => {
+    const [undoRedoState, updateUrS] = (
+      util.React.useState<UndoRedoHeadStack<string>>((
+        UndoRedoHeadStack.new<string>({
+          headValue: "hello" ,
+        })
+      ))
+    ) ;
     const [value, undoRedoOps] = (
-      useUndoableState({
-        initialState: (
-          UndoRedoHeadStack.new<string>({
-            headValue: "hello" ,
-          })
+      useUndoRedoStack(undoRedoState, {
+        onChange: ({ newStack, }) => (
+          updateUrS(() => newStack)
         ) ,
       })
     ) ;

@@ -1,3 +1,4 @@
+import "src/window-polyfills" 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import 'src/setupIonicReact1'

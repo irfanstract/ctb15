@@ -11,13 +11,14 @@ import EmAsyncifyExample from "src/projects/em_asyncify_example.out.wasm?init" ;
 import emAsyncifyExampleAgain from "src/projects/em_asyncify_example1" ; //
 //
 import './App.css'
+import { DpfhButton, } from 'src/projects/ffp/main' 
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <div className="App">
-      <div>
+      <div hidden>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>
@@ -36,6 +37,12 @@ function App() {
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
       </div>
+      <p>
+        <a href="about:blank">
+          <code>about:blank</code>
+        </a>
+        <DpfhButton />
+      </p>
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>

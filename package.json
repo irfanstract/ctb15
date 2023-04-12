@@ -9,9 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "core-js": "^3.30.0",
     "immutable": "^4.1.0",
     "jszip": "^3.10.1",
     "@xmldom/xmldom": "^0.8.6",
+    "@ffmpeg.wasm/main"   :  "0.12.0"   ,
+    "@ffmpeg.wasm/core-st":  "0.12.0"   ,
     "lodash": "^4.17.21",
     "@ionic/react": "^6.0.0",
     "@ionic/react-router": "^6.0.0",

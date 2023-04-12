@@ -360,6 +360,11 @@ export const {
     const currentlyJFrameController = (
       useCurrentAssociatedJFrame()
     ) ;
+    /** 
+     * a hook-call to 
+     * register {@link currentlyJFrameController} onto {@link currentlyJFrameController }
+     * 
+     */
     util.React["useLayoutEffect"](() => {
       if (currentlyJFrameController && expndElemRefed) {
         currentlyJFrameController.registeredPopupControllerSet.add(expndElemRefed);
@@ -371,6 +376,10 @@ export const {
       currentlyJFrameController,
       expndElemRefed ,
     ] );
+    /** 
+     * to be the main exports
+     * 
+     */
     const exports1 = (
       util.React.useMemo(() => (
         {
@@ -389,7 +398,8 @@ export const {
           ) ,
           
         } satisfies (
-          FoldedMenuCompController & {
+          & FoldedMenuCompController 
+          & {
             expndElemRefed: unknown ,
             currentlyJFrameController: unknown ,
           }

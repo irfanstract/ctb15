@@ -24,6 +24,7 @@ const tlcExemplaryTasksList = (
   [
     {
       title: `simple task 1A` ,
+      iconUrl: `https://picsum.photos/80/80?random=1` ,
       done: true ,
     } ,
     { 
@@ -33,9 +34,11 @@ const tlcExemplaryTasksList = (
     } ,
     {
       title: `Task 3` ,
+      iconUrl: `https://picsum.photos/80/80?random=3` ,
     } ,
     {
       title: `simple task 1C` ,
+      iconUrl: `https://picsum.photos/80/80?random=4` ,
       assignees: [
         { title: "Ve Rb" , } ,
         { title: "Ve Rn" , } ,
@@ -44,14 +47,22 @@ const tlcExemplaryTasksList = (
     } ,
     { 
       title: `simple task 1D` ,
+      iconUrl: `https://picsum.photos/80/80?random=5` ,
       assignees: [ 
         { title: "Ve Rn" , } ,
       ] ,
     } ,
     {
       title: `Task 6` ,
+      iconUrl: `https://picsum.photos/80/80?random=6` ,
     } ,
-  ] satisfies TaskDesc[]
+  ] satisfies (TaskDesc & { iconUrl?: string ; })[]
+) ;
+
+const renderComPicsumElement = (...[{ i, }] : [{ i: number ; }]) => (
+  <img 
+  src={`https://picsum.photos/80/80?random=${i }`} 
+  />
 ) ;
 
 const ToDoListComponent: (
@@ -120,6 +131,21 @@ const ToDoListComponent: (
       )}
       >
       {(
+        /* can't add extra item since that'd mess with semantics and hence Ion Reorder */
+        null && (
+          <IonItem>
+            <span 
+            style={{
+              display: "inline-block" ,
+              position: "relative" ,
+              width: "1em" ,
+              height: "1em" ,
+            }}
+            />
+          </IonItem>
+        )
+      )}
+      {(
         tasks
         .map(desc => /* add UID */ ({ ...desc, uid: JSON.stringify(desc), }) ) 
         .map((entry, entryOrdinal): util.React.ReactElement => {
@@ -129,6 +155,23 @@ const ToDoListComponent: (
             assignees: mAssignees = [] ,
             done: mDone = false ,
           } = entry ;
+          const icon = (
+            <span
+            style={{
+              display: "grid" ,
+              gridTemplateColumns: `0.5fr 1fr` ,
+            }}
+            >
+            <code>#{ entryOrdinal }</code>
+            { (
+              renderComPicsumElement({ 
+                i: (
+                  getXStringHashCode(tKey)
+                ) , 
+              })
+            ) }
+            </span>
+          ) ;
           const titleDisplay = (
             <p>
               title: { getTitleUtfAsQuotedOrSayNoDesc(entryTitle) }
@@ -189,8 +232,8 @@ const ToDoListComponent: (
           ) ;
           return (
             <IonItem key={tKey} >
-            <IonReorder>
-              <code>#{ entryOrdinal }</code>
+            <IonReorder slot="start" >
+              { icon }
             </IonReorder>
             <div>
               { titleDisplay }
@@ -208,6 +251,15 @@ const ToDoListComponent: (
     </div>
   ) ;
 } ;
+
+const getXStringHashCode: {
+  (v: string): number
+} = (tKey) => (
+  util._.sum((
+    Array.from(tKey satisfies string)
+    .map(s => s.codePointAt(0) ) 
+  ))
+) ;
 
 const PercentualCompletionalStatRender: (
   util.React.FC<(
