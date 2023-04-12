@@ -13,8 +13,8 @@ import Button from "./Button";
 
 import TdlCss from "./TDL.module.css" ;
 
-const ToDoList = () => {
-  const tasks: TaskDesc[] = [
+const tlcExemplaryTasksList = (
+  [
     {
       title: `simple task 1A` ,
       done: true ,
@@ -44,7 +44,45 @@ const ToDoList = () => {
     {
       title: `Task 6` ,
     } ,
-  ] satisfies TaskDesc[] ;
+  ] satisfies TaskDesc[]
+) ;
+
+const ToDoListComponent: (
+  util.React.FC<(
+    & { value: 3 | TaskDesc[] ; }
+    & Partial<{ 
+      
+      /** 
+       * optional action to run whenever "marrk as completed" gets clicked.
+       * can be omitted, in which case would avoid rendering such a button.
+       * 
+       */
+      onMarkItemAsCompleted: false | util.React.Dispatch<{ i: number ; }> ; 
+
+    }>
+  )>
+) = ({
+  value: tasks0 ,
+  onMarkItemAsCompleted ,
+}) => {
+  const {
+    tasks ,
+  } = (
+    ((): (
+      & {
+        tasks: TaskDesc[] ;
+      }
+    ) => {
+      if (tasks0 === 3) {
+        return {
+          tasks: tlcExemplaryTasksList ,
+        } ;
+      }
+      return {
+        tasks: tasks0 ,
+      } ;
+    })() 
+  ) ;
   return (
     <div className={`${TdlCss.ToDoList } ` }> 
       <p>
@@ -53,45 +91,78 @@ const ToDoList = () => {
       <ol>
       {(
         tasks
-        .map(entry => ({ ...entry, key: JSON.stringify(entry), }) ) 
-        .map((entry): util.React.ReactElement => {
+        .map(desc => /* add UID */ ({ ...desc, uid: JSON.stringify(desc), }) ) 
+        .map((entry, entryOrdinal): util.React.ReactElement => {
           const {
-            key: tKey ,
-            title: desc0 = "",
-            assignees = [] ,
-            done = false ,
+            uid: tKey ,
+            title: entryTitle = "",
+            assignees: mAssignees = [] ,
+            done: mDone = false ,
           } = entry ;
+          const titleDisplay = (
+            <p>
+              title: { getTitleUtfAsQuotedOrSayNoDesc(entryTitle) }
+            </p>
+          ) ;
+          const assignmentalDisplay = (
+            <div>
+            <p>
+              assignees:
+            </p>
+            <ul>
+            { (
+              mAssignees
+              .map(desc => /* add UID */ ({ ...desc, uid: JSON.stringify(desc), }) ) 
+              .map((entry) => {
+                const aKey = entry.uid ;
+                const aTitle = (
+                  getTitleUtfAsQuotedOrSayNoDesc(entry.title ?? "")
+                ) ;
+                return (
+                  <li key={aKey } >
+                    <a href="javascript:void(0)">
+                    { aTitle }
+                    </a>
+                  </li>
+                ) ;
+              })
+            ) }
+            </ul>
+            </div>
+          ) ;
+          const completionalStatDisplay = (
+            <PercentualCompletionalStatRender 
+            value={(mDone === true) ? 1 : 0.5 }
+            onMarkAsCompleted={(
+              // (1 < mAssignees.length) ? false : (() => {})
+              (() => {
+                B1:
+                {
+                  if ((1 < mAssignees.length)) {
+                    break B1 ;
+                  }
+                  if (onMarkItemAsCompleted) {
+                    return (
+                      () => {
+                        return (
+                          onMarkItemAsCompleted({
+                            i: entryOrdinal ,
+                          })
+                        ) ;
+                      }
+                    ) ;
+                  }
+                }
+                return false ;
+              })()
+            )} // TODO
+            />
+          ) ;
           return (
             <li key={tKey} >
-              <p>
-                title: {}
-                <span>
-                { titleUtfAsQuotedOrSayNoDesc(desc0) }
-                </span>
-              </p>
-              <p>
-                assignees:
-              </p>
-              <ul>
-              { (
-                assignees
-                .map(entry => ({ ...entry, key: JSON.stringify(entry), }) ) 
-                .map((entry) => {
-                  const aKey = entry.key ;
-                  return (
-                    <li key={aKey } >
-                      { titleUtfAsQuotedOrSayNoDesc(entry.title ?? "") }
-                    </li>
-                  ) ;
-                })
-              ) }
-              </ul>
-              <PercentualCompletionalStatComp 
-              value={(done === true) ? 1 : 0.5 }
-              onMarkAsCompleted={(
-                (1 < assignees.length) ? false : (() => {})
-              )} // TODO
-              />
+              { titleDisplay }
+              { assignmentalDisplay }
+              { completionalStatDisplay }
             </li>
           ) ;
         } )
@@ -101,38 +172,63 @@ const ToDoList = () => {
   ) ;
 } ;
 
-const PercentualCompletionalStatComp: (
+const PercentualCompletionalStatRender: (
   util.React.FC<(
     & { value: 0 | 0.5 | 1 ; }
-    & Partial<{ onMarkAsCompleted: false | util.React.DispatchWithoutAction ; }>
+
+    & Partial<{ 
+      
+      /** 
+       * optional action to run whenever "marrk as completed" gets clicked.
+       * can be omitted, in which case would avoid rendering such a button.
+       * 
+       */
+      onMarkAsCompleted: false | util.React.DispatchWithoutAction ; 
+
+    }>
+
   )>
 ) = ({
   value ,
   onMarkAsCompleted: markAsCompleted = false ,
 }) => {
+  const statusDisplayParagraph = (
+    <p>
+      Status: {} 
+      {( 
+        { 
+          [ 0   ]: "0", 
+          [ 0.5 ]: "in progress", 
+          [ 1   ]: "completed",
+        }[value] 
+      )}
+    </p>
+  ) ;
+  const optionalMarkPretendCompleteButton = (
+    (value < 1) && (
+      markAsCompleted && (
+        <Button
+        onClick={() => markAsCompleted()}
+        >
+          Mark As Completed
+        </Button>
+      )
+    )
+  ) ;
+  const extraActionsBar = (
+    <p>
+      { optionalMarkPretendCompleteButton }
+    </p>
+  ) ;
   return (
     <div>
-      <p>
-        Status: {( { 0: "0", 0.5: "in progress", 1: "completed" }[value] )}
-      </p>
-      <p>
-        {(
-          (value < 1) && (
-            markAsCompleted && (
-              <Button
-              onClick={() => markAsCompleted()}
-              >
-                Mark As Completed
-              </Button>
-            )
-          )
-        )}
-      </p>
+      { statusDisplayParagraph }
+      { extraActionsBar }
     </div>
   ) ;
 } ;
 
-const titleUtfAsQuotedOrSayNoDesc: {
+const getTitleUtfAsQuotedOrSayNoDesc: {
   (v: string): util.React.ReactElement ;
 } = (
   (desc0) => (
@@ -145,7 +241,48 @@ const titleUtfAsQuotedOrSayNoDesc: {
 
 
 
-export default ToDoList ;
+export default ToDoListComponent ;
+
+export const ToDoListDemoComponent = ( 
+  () => {
+    const [value, setValue] = (
+      util.React.useState<(
+        util.React.ComponentProps<typeof ToDoListComponent>["value"] & {}[]
+      )>(tlcExemplaryTasksList)
+    ) ;
+    function markNthItemAsDone(i: number): void;
+    function markNthItemAsDone(assignedItemOrdinal: number): void {
+      setValue(list0 => (
+        list0
+        .map((item, iteratedItemOrdinal) => {
+          if (iteratedItemOrdinal === assignedItemOrdinal) {
+            return { ...item, done: true, } ;
+          }
+          return item ;
+        })
+      )) ;
+    }
+    return (
+      <div>
+      <ToDoListComponent 
+      value={value}
+      onMarkItemAsCompleted={({
+        i: i ,
+      }) => {
+        markNthItemAsDone(i) ;
+      }}
+      />
+      <p>
+        <Button
+        onClick={() => setValue(() => tlcExemplaryTasksList) }
+        >
+          Reset 
+        </Button>
+      </p>
+      </div>
+    ) ;
+  }
+) ;
 
 // assert they will all compile
 {
@@ -154,7 +291,7 @@ export default ToDoList ;
         Do Some Action
     </Button>
   ) ;
-  <ToDoList /> ;
+  <ToDoListDemoComponent /> ;
 }
 
 

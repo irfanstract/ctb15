@@ -3,7 +3,8 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import * as Assert from "assert";
 import * as util from "src/utility-functions/all" ;
-import ToDoList from 'src/projects/ToDoListComponent';
+import ToDoListComponent from 'src/projects/ToDoListComponent';
+import { ToDoListDemoComponent, } from 'src/projects/ToDoListComponent';
 //
 import './App.css'
 
@@ -25,7 +26,7 @@ function App() {
         <button onClick={() => { setCount((count) => count + 1) ; }}>
           count is {count}
         </button>
-        <ToDoList />
+        <ToDoListDemoComponent />
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
