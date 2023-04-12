@@ -66,68 +66,10 @@ const JFrameCompImpl = (() => {
   return (
     (function JFrameCompRender({
       style: styleProps ,
-      editHandler ,
-      undoManager ,
+      mainContent ,
+      opListing: windowMgmtMenuBar ,
+      statsBar ,
     }) {
-      const windowMgmtMenuBar = (
-        renderBasicRichMenuBar({
-          editHandler ,
-          undoManager ,
-        })
-      ) ;
-      const statsBar = (
-        <Ionic.ToolBar>
-          <button>
-            24 lines
-          </button>
-          <button>
-            24 lines
-          </button>
-        </Ionic.ToolBar>
-      ) ;
-      const mainDocContentView = (
-        <div>
-          <p>
-            User Content Goes Here
-          </p>
-          <p>
-            User Content Goes Here
-          </p>
-          <p>
-            User Content Goes Here
-          </p>
-          <p>
-            User Content Goes Here
-          </p>
-          <p>
-            User Content Goes Here
-          </p>
-        </div>
-      ) ;
-      const frequentToolsBar = (
-        renderBasicRichFrequentToolsBar({
-          undoManager ,
-          editHandler ,
-        })
-      ) ;
-      const mainContent = (
-        <div
-        className="JFrameContentAndToolbar "
-        style={{
-          display: "flex" ,
-          flexDirection: "column-reverse" ,
-        }}
-        >
-          <div style={{ order: 0 , }}>
-            <div className="JFrameContent " >
-            { mainDocContentView }
-            </div>
-          </div>
-          <div style={{ order: 1000 , }}>
-            { frequentToolsBar }
-          </div>
-        </div>
-      ) ;
       const masterController = (
         util.React.useMemo<JFrameController>(() => (
           new (class implements JFrameController {
@@ -156,11 +98,17 @@ const JFrameCompImpl = (() => {
         id={cssId + "-c"}
         >
           <ContentWithOpListingAndStatBarAggregatingComp 
-          {...{
-            mainContent ,
-            opListing: windowMgmtMenuBar ,
-            statsBar ,
-          }}
+          {...(
+            {
+              mainContent ,
+              opListing: windowMgmtMenuBar ,
+              statsBar ,
+            } satisfies /* ensure that THERE'S NO MISSED PROPERTY */ (
+              util.MustSpecifyAll<(
+                util.React.ComponentProps<typeof ContentWithOpListingAndStatBarAggregatingComp>
+              )>
+            )
+          )}
           />
         </div>
         </div>
@@ -168,7 +116,8 @@ const JFrameCompImpl = (() => {
       ) ;
     }) satisfies (
       util.React.FC<(
-        util.React.ComponentProps<typeof import("./FileEditViewWindowComponent").default>
+        & Pick<JSX.IntrinsicElements["div"], "style">
+        & util.React.ComponentPropsWithoutRef<typeof ContentWithOpListingAndStatBarAggregatingComp>
       )>
     )
   ) ;

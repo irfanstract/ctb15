@@ -7,6 +7,14 @@
 
 
 
+export type MustSpecifyAll<P extends {}> = (
+  P & Record<keyof P, unknown>
+) ;
+
+export type PickAll<P extends {}, Q> = (
+  Pick<P, (keyof P) & Q>
+) ;
+
 ;
 /**
  * due to the resulting type-mismatch issues,
@@ -16,6 +24,7 @@
 export type PropsWithoutConflicts<A0 extends { [k: string | number | symbol]: unknown ; }> = (
   ConjunctionFromAlternation<A0>
 ) ;
+
 /** 
  * with each property `bar: V` become `bar: (value: V) => void`
  * 

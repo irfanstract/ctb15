@@ -24,6 +24,11 @@ export { OpButton, } ;
 import { Ionic, } from "src/projects/jframes/util";
 export { Ionic, } ;
 
+/** 
+ * `<ion-item>`s can natively be buttons, and in such case
+ * it shall never contain `<button>`s
+ * 
+ */
 export const renderIonicItemFromElement = (
   function AGAIN(e: util.React.ReactElement): util.React.ReactElement {
     // console["log"]({ e, }) ;

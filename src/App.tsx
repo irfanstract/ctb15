@@ -5,7 +5,7 @@ import * as Assert from "assert";
 import * as util from "src/utility-functions/all" ;
 import ToDoListComponent from 'src/projects/ToDoListComponent';
 import { ToDoListDemoComponent, } from 'src/projects/ToDoListComponent';
-import JFrame from './projects/JFrame';
+import JFrame from './projects/jframes/FileEditViewWindowComponent';
 //
 import './App.css'
 

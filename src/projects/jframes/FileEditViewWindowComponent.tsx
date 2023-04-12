@@ -24,17 +24,97 @@ import { IonFoldedMenuComp, } from "./PopupMenu";
 import JFrameComp from "./JFrameComponent";
 
 const FilevwFrameComp = (
-  (function FilevwFrameCompRender(...[props] : [
-    (
-      & { style ?: util.React.CSSProperties ; }
-      & EditorOptions
-    ) ,
-  ] ): util.React.ReactElement {
-    return (
-      <JFrameComp {...props} />
+  (function FilevwFrameCompRender({
+    style: styleProps ,
+    editHandler ,
+    undoManager ,
+  }) {
+    const windowMgmtMenuBar = (
+      renderBasicRichMenuBar({
+        editHandler ,
+        undoManager ,
+      })
     ) ;
-  })
+    const statsBar = (
+      <Ionic.ToolBar>
+        <button>
+          24 lines
+        </button>
+        <button>
+          24 lines
+        </button>
+      </Ionic.ToolBar>
+    ) ;
+    const mainDocContentView = (
+      <div>
+        <p>
+          User Content Goes Here
+        </p>
+        <p>
+          User Content Goes Here
+        </p>
+        <p>
+          User Content Goes Here
+        </p>
+        <p>
+          User Content Goes Here
+        </p>
+        <p>
+          User Content Goes Here
+        </p>
+      </div>
+    ) ;
+    const frequentToolsBar = (
+      renderBasicRichFrequentToolsBar({
+        undoManager ,
+        editHandler ,
+      })
+    ) ;
+    const mainContent = (
+      <div
+      className="JFrameContentAndToolbar "
+      style={{
+        display: "flex" ,
+        flexDirection: "column-reverse" ,
+      }}
+      >
+        <div style={{ order: 0 , }}>
+          <div className="JFrameContent " >
+          { mainDocContentView }
+          </div>
+        </div>
+        <div style={{ order: 1000 , }}>
+          { frequentToolsBar }
+        </div>
+      </div>
+    ) ;
+    return (
+      <JFrameComp 
+      {...(
+        {
+          mainContent ,
+          opListing: windowMgmtMenuBar ,
+          statsBar ,
+
+          style: styleProps ,
+
+        } satisfies /* ensure that THERE BE NO MISSED PROPERTY */ (
+          util.MustSpecifyAll<(
+            util.React.ComponentProps<typeof JFrameComp>
+          )>
+        ) 
+      )}
+      />
+    ) ;
+  }) satisfies (
+    util.React.FC<(
+      & util.PickAll<JSX.IntrinsicElements["div"], keyof util.React.ComponentProps<typeof JFrameComp> >
+      & EditorOptions
+    )>
+  )
 ) ;
+
+;
 
 import { ContentWithOpListingAndStatBarAggregatingComp, } from "./JFrameComponent";
 
@@ -111,11 +191,13 @@ export const renderBasicRichMenuBar: {
         />
         <OpButton 
         children={"Save"} 
+        onClick={undefined }
         />
         <Ionic.IonItemDivider 
         />
         <OpButton 
         children={"Close"} 
+        onClick={undefined }
         />
       </FoldedMenuComp>
       <FoldedMenuComp 
@@ -150,6 +232,7 @@ export const renderBasicRichMenuBar: {
         >
           <OpButton 
           children={"View And Compare The Complete Rev History"} 
+          onClick={undefined }
           />
         </FoldedMenuComp>
         <Ionic.IonItemDivider 
@@ -168,6 +251,7 @@ export const renderBasicRichMenuBar: {
       >
         <OpButton 
         children={"Copy Screengrab"} 
+        onClick={undefined }
         />
         <Ionic.IonItemDivider 
         />
@@ -176,6 +260,7 @@ export const renderBasicRichMenuBar: {
         >
           <OpButton 
           children={"Caret And Cursor Settings"} 
+          onClick={undefined }
           />
           <Ionic.IonItemDivider 
           />
