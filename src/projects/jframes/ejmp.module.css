@@ -21,7 +21,7 @@
 .Menubar {
   display: flex;
   flex-direction: row;
-  overflow: auto;
+  flex-wrap: wrap;
 }
 
 
@@ -37,11 +37,14 @@
 .PopupItemsContainer {
   padding-inline-start: 0.5em;
   font-size: 90% ;
-  padding-block-end: 0.75em;
+  padding-block-end: 1.5em;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   align-items: stretch;
+}
+.PopupItemsContainer > * {
+  background: transparent;
 }
 
 .PopupBpv {
@@ -50,6 +53,7 @@
   align-items: flex-start;
   align-items: stretch;
 }
+
 
 
 

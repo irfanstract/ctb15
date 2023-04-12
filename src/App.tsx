@@ -5,7 +5,7 @@ import * as Assert from "assert";
 import * as util from "src/utility-functions/all" ;
 import ToDoListComponent from 'src/projects/ToDoListComponent';
 import { ToDoListDemoComponent, } from 'src/projects/ToDoListComponent';
-import JFrameR from './projects/JFrame';
+import JFrame from './projects/JFrame';
 //
 import './App.css'
 
@@ -28,10 +28,13 @@ function App() {
           count is {count}
         </button>
         <ToDoListDemoComponent />
-        <JFrameR 
+        <JFrame 
         undoManager={{
           undo: () => {} ,
           redo: () => {} ,
+        }}
+        editHandler={{
+          invokeCopy() {} ,
         }}
         />
         <p>
