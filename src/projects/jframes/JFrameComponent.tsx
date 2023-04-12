@@ -41,10 +41,10 @@ export const ContentWithOpListingAndStatBarAggregatingComp = (
         <div style={{ order: 0, }} >
           { mainContent }
         </div>
-        <div style={{ order: 1000, zoom: `80%`, }} >
+        <div className={`${JFrameCss.JfrAside } ` } style={{ order: 1000, zoom: `80%`, }} >
           { windowMgmtMenuBar }
         </div>
-        <div style={{ order: -1000, zoom: `80%`, }} >
+        <div className={`${JFrameCss.JfrAside } ` } style={{ order: -1000, zoom: `80%`, }} >
           { statsBar }
         </div>
       </div>
@@ -71,17 +71,7 @@ const JFrameCompImpl = (() => {
       statsBar ,
     }) {
       const masterController = (
-        util.React.useMemo<JFrameController>(() => (
-          new (class implements JFrameController {
-            closeAllPopups = () => (
-              this.registeredPopupControllerSet
-              .forEach(c => c.dismiss() )
-            ) ;
-            registeredPopupControllerSet = (
-              new Set<HTMLIonPopoverElement>()
-            ) ;
-          })
-        ), [])
+        useJFrameImplMasterControllerImplement()
       ) ;
       const cssId = (
         util.React.useId()
@@ -125,13 +115,6 @@ const JFrameCompImpl = (() => {
 
 export default JFrameComp ;
 
-import { EditorOptions, } from "./FileEditViewWindowComponent";
-
-import { 
-  renderBasicRichMenuBar, 
-  renderBasicRichFrequentToolsBar ,
-} from "./FileEditViewWindowComponent";
-
 
 
 
@@ -141,6 +124,24 @@ import {
 
 
 
+
+const useJFrameImplMasterControllerImplement = (
+  ((...[{} = {}]) => (
+    util.React.useMemo<JFrameController>(() => (
+      new (class implements JFrameController {
+        closeAllPopups = () => (
+          this.registeredPopupControllerSet
+          .forEach(c => c.dismiss() )
+        ) ;
+        registeredPopupControllerSet = (
+          new Set<HTMLIonPopoverElement>()
+        ) ;
+      })
+    ), [])
+  )) satisfies {
+    (options ?: {}): unknown ;
+  }
+) ;
 
 interface JFrameController {
   registeredPopupControllerSet: Set<HTMLIonPopoverElement> ;

@@ -122,6 +122,7 @@ export interface EditorOptions {
   undoManager ?: {
     undo?: () => void ;
     redo?: () => void ;
+    getUndoCount ?: () => number;
     noneUnsavedChanges ?: boolean ; 
     versionNumber ?: number | string ;
   } ;
@@ -301,7 +302,11 @@ export const renderBasicRichFrequentToolsBar: {
   return (
     <Ionic.ToolBar>
       <OpButton 
-      children={<Ionic.Icon icon={ionIcons.arrowUndo } /> }
+      children={(
+        <span>
+          <Ionic.Icon icon={ionIcons.arrowUndo } /> {undoManager?.getUndoCount?.() }
+        </span>
+      ) }
       onClick={undoManager?.undo }
       />
       <OpButton

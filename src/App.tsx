@@ -5,7 +5,8 @@ import * as Assert from "assert";
 import * as util from "src/utility-functions/all" ;
 import ToDoListComponent from 'src/projects/ToDoListComponent';
 import { ToDoListDemoComponent, } from 'src/projects/ToDoListComponent';
-import JFrame from './projects/jframes/FileEditViewWindowComponent';
+import JFrame from 'src/projects/jframes/FileEditViewWindowComponent';
+import JFrameUndoRedoBtnDemoComp from 'src/projects/jframes/ContentUndoRedoApp';
 //
 import './App.css'
 
@@ -28,18 +29,7 @@ function App() {
           count is {count}
         </button>
         <ToDoListDemoComponent />
-        <JFrame 
-        undoManager={{
-          undo: () => {} ,
-          redo: () => {} ,
-        }}
-        editHandler={{
-          invokeCopy() {} ,
-        }}
-        style={{
-          resize: "both" ,
-        }}
-        />
+        <IJFrameDemo />
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
@@ -50,5 +40,9 @@ function App() {
     </div>
   )
 }
+
+const IJFrameDemo = (
+  JFrameUndoRedoBtnDemoComp
+) ;
 
 export default App

@@ -17,6 +17,22 @@
 
 .JFramecontent {}
 
+.JfrAside {
+  transition: all 0.5s ease-out;
+  color: var(--ion-color-primary);
+}
+.JfrAside {
+  /* opacity: 0.5; */
+}
+.JfrAside:hover,
+.JfrAside:focus-within {
+  /* opacity: 0.85; */
+  color: var(--ion-color-dark);
+}
+.JfrAside:focus-within {
+  /* opacity: 1; */
+}
+
 
 
 

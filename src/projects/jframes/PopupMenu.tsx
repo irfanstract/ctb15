@@ -41,12 +41,29 @@ import { JFrameCss, } from "src/projects/jframes/util";
  * when a menu-item is a directory rather than a leaf,
  * we can call that "a menu-anchour" element
  * 
+ * clicking any enabled item shall close the pop-up but there's some exception.
+ * when the item is another nested menu the behv shall *not* reproduce.
+ * when it's a meta button the behaviour shall *not* reproduce.
+ * 
  */
-function isControllerForPopupMenuMetaBtn(...args: [Element]): boolean ;
-function isControllerForPopupMenuMetaBtn(...[srcEl]: [Element]): boolean {
-  return (
-    srcEl.matches("." + JFrameCss.PopupElMetaCtrlBtn )
-  ) ;
+function isControllerForPopupMenuMetaElement(...args: [Element]): boolean ;
+function isControllerForPopupMenuMetaElement(...[srcEl]: [Element]): boolean {
+  /** 
+   * note that selecting the element itself will not be enough ;
+   * a ClickEvent could have been on a descendant rather than merely on itself
+   * 
+   */
+  {
+    const sel1 = (
+      "." + JFrameCss.PopupElMetaCtrlBtn
+    ) ;
+    return (
+      srcEl.matches((
+        ([sel1, `${sel1} * ` ] satisfies string[])
+        .join(", ")
+      ) )
+    ) ;
+  }
 }
 
 
@@ -61,8 +78,10 @@ export const {
 } = (() => {
   const getRenderer = (({
 
+    renderHbn: Hbn ,
+
     asProperlyDecoratedItem ,
-    renderButtonlikeItemComp ,
+    renderItemBeingButtonlike ,
     
     deservesManualAutoDismiss ,
 
@@ -76,7 +95,14 @@ export const {
     ] : [
   
       props: (
-        & { header: null | string | number | util.React.ReactElement ; }
+        & { 
+          
+          /** 
+           * 
+           */
+          header: null | string | number | util.React.ReactElement ; 
+          
+        }
         & Required<util.React.PropsWithChildren>
       ), 
       ref: util.React.ForwardedRef<(
@@ -107,7 +133,7 @@ export const {
        * 
        */
       const headingBtn = (
-        renderButtonlikeItemComp({
+        renderItemBeingButtonlike({
           id: designatedId + "-OpeningTrigger" ,
           className: `${JFrameCss.PopupElMetaCtrlBtn } ` ,
           onClick: ONCLICK_IONIC_POP ,
@@ -118,7 +144,7 @@ export const {
        * the "close" btn
        */
       const closingBtn = (
-        renderButtonlikeItemComp({
+        renderItemBeingButtonlike({
           className: `${JFrameCss.PopupElMetaCtrlBtn } ` ,
           onClick: closeBtnCallback ,
           children: <>cancel</> ,
@@ -180,9 +206,18 @@ export const {
         const srcElemController = (
           (e.target as Element)
         ) ;
+        /** 
+         * when a menu-item is a directory rather than a leaf,
+         * we can call that "a menu-anchour" element
+         * 
+         * clicking any enabled item shall close the pop-up but there's some exception.
+         * when the item is another nested menu the behv shall *not* reproduce.
+         * when it's a meta button the behaviour shall *not* reproduce.
+         * 
+         */
         const isClickOnEnabledAppItem = (
-          isControllerForButtonlike(srcElemController) &&
-          !isControllerForPopupMenuMetaBtn(srcElemController) &&
+          (isControllerForButtonlike(srcElemController) === true) &&
+          !isControllerForPopupMenuMetaElement(srcElemController) &&
           !util.isControlledElementDisabled(srcElemController)
         ) satisfies boolean ;
         const shallCauseCollapse = (
@@ -196,16 +231,24 @@ export const {
       }) satisfies { 
         (...a: Parameters<JSX.IntrinsicElements["div"]["onClick"] & Function>): object ; 
       } ;
-      return (
-        <div 
-        className={`${JFrameCss.Popup } ${JFrameCss.PopupBpv } ` }
-        onBlur={e => {
+      const onBlur: Required<JSX.IntrinsicElements["div"]>["onBlur"] = (
+        e => {
           // setExpanded(e.currentTarget) ;
-        } }
-        >
-          { headingBtn }
-          { popupible }
-        </div>
+        } 
+      ) ;
+      return (
+        // <div 
+        // className={`${JFrameCss.Popup } ${JFrameCss.PopupBpv } ` }
+        // onBlur={onBlur }
+        // >
+        //   { headingBtn }
+        //   { popupible }
+        // </div>
+        Hbn({
+          headingBtn ,
+          expansion: popupible ,
+          onBlur ,
+        })
       ) ;
     })
   )) satisfies {
@@ -213,6 +256,22 @@ export const {
     (options: (
       {}
       & {
+
+        renderHbn: {
+          (props: (
+            // & (
+            //   & util.React.ComponentProps<"div">
+            //   & util.React.ComponentProps<typeof util.React.Fragment>
+            // )
+            & {
+              headingBtn: util.React.ReactElement ;
+              expansion : util.React.ReactElement ;
+            }
+            & {
+              onBlur: Required<JSX.IntrinsicElements["div"]>["onBlur"] ;
+            }
+          )): util.React.ReactElement ;
+        } ;
     
         /** 
          * when used as child of plain `div` with `display: flex` no wrapping would be necessary ;
@@ -229,8 +288,10 @@ export const {
          * when used as child of plain `div` with `display: flex` that'd be regular `<button>` or `<ion-button>` ;
          * when used as child of `ion-list` it'd need to be `<ion-item is-button>` ;
          * 
+         * see also `asProperlyDecoratedItem`
+         * 
          */
-        renderButtonlikeItemComp: {
+        renderItemBeingButtonlike: {
           (props: (
             & Omit<(
               & util.React.ComponentPropsWithoutRef<"button" >
@@ -320,8 +381,25 @@ export const {
 
     PlainFoldedMenuComp: getRenderer({
 
+      renderHbn: ({
+        headingBtn ,
+        expansion: popupible ,
+        onBlur ,
+      }) => {
+        ;
+        return (
+          <div 
+          className={`${JFrameCss.Popup } ${JFrameCss.PopupBpv } ` }
+          onBlur={onBlur }
+          >
+            { headingBtn }
+            { popupible }
+          </div>
+        ) ;
+      },
+
       asProperlyDecoratedItem: (e) => e ,      
-      renderButtonlikeItemComp: ({
+      renderItemBeingButtonlike: ({
         children: usrLabel ,
         onClick ,
         ...props
@@ -347,10 +425,31 @@ export const {
 
     IonFoldedMenuComp: getRenderer({
       
+      renderHbn: ({
+        headingBtn ,
+        expansion: popupible ,
+        onBlur ,
+      }) => {
+        ;
+        return (
+          <>
+            { headingBtn }
+            { popupible }
+          </>
+        ) ;
+      },
+
       asProperlyDecoratedItem: (
-        e => renderIonicItemFromElement(e)
+        e => {
+          if (e.type === IonFoldedMenuComp) {
+            return e ;
+          }
+          return (
+            renderIonicItemFromElement(e)
+          ) ;
+        }
       ) ,
-      renderButtonlikeItemComp: ({
+      renderItemBeingButtonlike: ({
         children: usrLabel ,
         onClick ,
         ...props
