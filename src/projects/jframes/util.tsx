@@ -31,7 +31,11 @@ export { Button, } ;
  * a wrapper for {@link Button } which will automatically be `disabled` if `onClick` were null
  * 
  */
-export const CallbackButton = (() => {
+export const OpButton = (function <XB extends typeof Button>(...[{ 
+  // Button, 
+}] : [{
+  Button : XB ;
+}] ) {
   type PccTest0 = (
     AsEachFromAcceptor<(
       AsEachAsAcceptor<{ s: string | number ; } | { s: string | boolean ; }>
@@ -79,7 +83,9 @@ export const CallbackButton = (() => {
        }
     ))
   ) ;
-})() ;
+})({
+  Button ,
+}) ;
 
 import * as Ionic from "src/projects/Ionic" ;
 export { Ionic, } ;
@@ -89,6 +95,13 @@ export { Ionic, } ;
 
 import JFrameCss from "src/projects/jframes/ejmp.module.css" ;
 export { JFrameCss as JFrameCss, } ;
+
+export function isControlledElementDisabled(controller: Element): boolean ;
+export function isControlledElementDisabled(srcEl: Element) {
+  return (
+    srcEl.matches(`*:disabled`)
+  ) ;
+}
 
 
 

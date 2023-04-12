@@ -37,7 +37,7 @@ export type AsEachAsAcceptorImpl<A0> = (
   //   { [k in AKey] -?: [A[k] extends infer P ? ((value: P) => void) : never] extends [infer PV extends ((v: never) => void)] ? PV : never ; }
   //   : never
   // ) : never
-  { [k in (keyof A0) & {}] -?: (value: A0[k]) => void ; }
+  { [k in (keyof A0) & {}] /* REQUIRED */ -?: (value: A0[k]) => void ; }
 );
 
 /** 

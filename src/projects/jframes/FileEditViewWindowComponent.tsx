@@ -13,7 +13,7 @@ import * as util from "src/projects/jframes/util" ;
 import { ionIcons, } from "src/projects/jframes/util";
 
 import Button from "src/projects/Button";
-import { CallbackButton, } from "src/projects/jframes/util";
+import { OpButton, } from "src/projects/jframes/util";
 
 import { Ionic, } from "src/projects/jframes/util";
 
@@ -62,23 +62,23 @@ const JFrameComp = (
     ) ;
     const frequentToolsBar = (
       <Ionic.ToolBar>
-        <CallbackButton 
+        <OpButton 
         children={<Ionic.Icon icon={ionIcons.arrowUndo } /> }
         onClick={undoManager?.undo }
         />
-        <CallbackButton
+        <OpButton
         children={<Ionic.Icon icon={ionIcons.arrowRedo } /> }
         onClick={undoManager?.redo }
         />
-        <CallbackButton 
+        <OpButton 
         children={<Ionic.Icon icon={ionIcons.cut } /> }
         onClick={editHandler?.invokeCut }
         />
-        <CallbackButton 
+        <OpButton 
         children={<Ionic.Icon icon={ionIcons.copy } /> }
         onClick={editHandler?.invokeCopy }
         />
-        <CallbackButton 
+        <OpButton 
         children={<Ionic.Icon icon={ionIcons.clipboard } /> }
         onClick={editHandler?.invokePaste }
         />
@@ -229,47 +229,47 @@ const renderDemoMenuBar: {
         <Button 
         children={"Open"} 
         />
-        <CallbackButton 
+        <OpButton 
         children={"Save"} 
         />
         <Ionic.IonItemDivider />
-        <CallbackButton 
+        <OpButton 
         children={"Close"} 
         />
       </FoldedMenuComp>
       <FoldedMenuComp 
       header={"Edit"}
       >
-        <CallbackButton 
+        <OpButton 
         children={"undo" }
         onClick={undoManager?.undo }
         />
-        <CallbackButton
+        <OpButton
         children={"redo" }
         onClick={undoManager?.redo }
         />
-        <CallbackButton 
+        <OpButton 
         children={"Cut" }
         onClick={editHandler?.invokeCut }
         />
-        <CallbackButton 
+        <OpButton 
         children={"Copy" }
         onClick={editHandler?.invokeCopy }
         />
-        <CallbackButton 
+        <OpButton 
         children={"Paste" }
         onClick={editHandler?.invokePaste }
         />
         <FoldedMenuComp 
         header={"advanced"}
         >
-          <CallbackButton 
+          <OpButton 
           children={"View And Compare The Complete Rev History"} 
           />
         </FoldedMenuComp>
         <WithAssociatedJFrame>
         { c => (
-          <CallbackButton 
+          <OpButton 
           children={<Ionic.Icon icon={ionIcons.bulb } /> }
           onClick={c ? (() => c.closeAllPopups()) : undefined }
           />

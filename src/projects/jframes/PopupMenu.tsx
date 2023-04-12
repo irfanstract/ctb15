@@ -12,7 +12,7 @@ import * as util from "src/projects/jframes/util" ;
 import { ionIcons, } from "src/projects/jframes/util";
 
 import Button from "src/projects/Button";
-import { CallbackButton, } from "src/projects/jframes/util";
+import { OpButton, } from "src/projects/jframes/util";
 
 import { Ionic, } from "src/projects/jframes/util";
 
@@ -24,12 +24,23 @@ import { Ionic, } from "src/projects/jframes/util";
 import { componentTreeJFrameAssocs, } from "./FileEditViewWindowComponent";
 
 import { JFrameCss, } from "src/projects/jframes/util";
+/** 
+ * when a menu-item is a directory rather than a leaf,
+ * we can call that "a menu-anchour" element
+ * 
+ */
+function isControllerForPopupMenuMetaBtn(...args: [Element]): boolean ;
+function isControllerForPopupMenuMetaBtn(...[srcEl]: [Element]): boolean {
+  return (
+    srcEl.matches("." + JFrameCss.PopupElMetaCtrlBtn )
+  ) ;
+}
 
 
 type FoldedMenuCompController = (
   & { setExpanded(v: boolean): void ; }
-  & { setExpanded1(...args: Parameters<HTMLIonPopoverElement["present"]>): void ; }
-  & { isOpen(): boolean ; }
+  & { setExpandedDueToEvent(...args: Parameters<HTMLIonPopoverElement["present"]>): void ; }
+  & { isExpanded(): boolean ; }
 );
 export const FoldedMenuComp = (
   util.React.forwardRef(function GroupingMenuRImpl(...[
@@ -49,7 +60,7 @@ export const FoldedMenuComp = (
     )>  ,
     
   ]) {
-    const eId = (
+    const intendedControllerId = (
       util.React.useId()
     ) ;
     const [
@@ -60,13 +71,13 @@ export const FoldedMenuComp = (
     const { 
       expndElemRefed, 
       setExpanded, 
-      setExpanded1, 
-      isOpen ,
+      setExpandedDueToEvent, 
+      isExpanded ,
       currentlyJFrameController, 
     } = exports ;
     const headingBtn = (
       <Button
-      id={eId + "-OpeningTrigger" }
+      id={intendedControllerId + "-OpeningTrigger" }
       className={`${JFrameCss.PopupElMetaCtrlBtn } ` }
       type="button"
       >
@@ -74,50 +85,63 @@ export const FoldedMenuComp = (
       </Button>
     ) ;
     const closingBtn = (
-      <CallbackButton 
+      <OpButton 
       className={`${JFrameCss.PopupElMetaCtrlBtn } ` }
       onClick={(
         expndElemRefed ? (() => expndElemRefed.dismiss()) : undefined
       )}
       >
         cancel
-      </CallbackButton>
+      </OpButton>
+    ) ;
+    const itemsFinal = (
+      // has additional divider at the end
+      [
+        ...util.React.Children.toArray(items) , 
+        <Ionic.IonItemDivider />,
+        closingBtn ,
+      ]
     ) ;
     const popupContents = (
       <div 
       className={` ${JFrameCss.PopupItemsContainer } `}
       onClick={e => {
-        const srcEl = (
-          (e.target as Element)
-        ) ;
-        const shallClose = (
-          srcEl.matches(`button, a, ion-button, ion-nav-link`) &&
-          !srcEl.matches("." + JFrameCss.PopupElMetaCtrlBtn ) &&
-          !srcEl.matches(`*:disabled`)
-        ) satisfies boolean ;
-        if (shallClose === false ) {
+        const {
+          srcElemController: srcEl ,
+          isClickOnEnabledAppItem ,
+          shallCauseCollapse ,
+        } = analysePopoverClickEvt(e) ;
+        if (shallCauseCollapse === false ) {
           // return ;
         } else {
           expndElemRefed && expndElemRefed.dismiss() ;
         }
       }}
       >
-        { (() => {
-          const itemsFinal = (
-            // used to insert additional divider at the end, but
-            // removed it for being unsemantic
-            [
-              ...util.React.Children.toArray(items) , 
-              <Ionic.IonItemDivider />,
-              closingBtn ,
-            ]
-          ) ;
-          return (
-            itemsFinal
-          ) ;
-        })() }
+        { itemsFinal }
       </div>
     ) ;
+    const analysePopoverClickEvt = ((...[e]) => {
+      ;
+      const srcElemController = (
+        (e.target as Element)
+      ) ;
+      const isClickOnEnabledAppItem = (
+        srcElemController.matches(`button, a, ion-button, ion-nav-link`) &&
+        !isControllerForPopupMenuMetaBtn(srcElemController) &&
+        !util.isControlledElementDisabled(srcElemController)
+      ) satisfies boolean ;
+      const shallCauseCollapse = (
+        isClickOnEnabledAppItem
+      ) satisfies boolean ;
+      return {
+        srcElemController ,
+        isClickOnEnabledAppItem ,
+        shallCauseCollapse ,
+      } ;
+    }) satisfies { 
+      (...a: Parameters<JSX.IntrinsicElements["div"]["onClick"] & Function>): object ; 
+    } ;
     return (
       <div 
       className={`${JFrameCss.Popup } ${JFrameCss.PopupBpv } ` }
@@ -128,7 +152,7 @@ export const FoldedMenuComp = (
         { headingBtn }
         <Ionic.IonPopover
         ref={expndElemRefUpdate }
-        trigger={eId + "-OpeningTrigger" }
+        trigger={intendedControllerId + "-OpeningTrigger" }
         showBackdrop={false }
         >
           { popupContents }
@@ -169,16 +193,19 @@ const useXController1 = () => {
           if (!expndElemRefed) return ;
           v ? expndElemRefed.present() : expndElemRefed.dismiss() ;
         },
-        setExpanded1(evt): void {
+        setExpandedDueToEvent(evt): void {
           if (!expndElemRefed) return ;
           expndElemRefed.present(evt) ;
         },
-        isOpen: () => (
+        isExpanded: () => (
           (expndElemRefed && expndElemRefed.isOpen) || false
         ) ,
         
       } satisfies (
-        FoldedMenuCompController & { [k: string]: unknown ; }
+        FoldedMenuCompController & {
+          expndElemRefed: unknown ,
+          currentlyJFrameController: unknown ,
+        }
       )
     ), [
       expndElemRefed,
