@@ -6,7 +6,9 @@ import * as util from "src/utility-functions/all" ;
 import ToDoListComponent from 'src/projects/ToDoListComponent';
 import { ToDoListDemoComponent, } from 'src/projects/ToDoListComponent';
 import JFrame from 'src/projects/jframes/FileEditViewWindowComponent';
-import JFrameUndoRedoBtnDemoComp from 'src/projects/jframes/ContentUndoRedoApp';
+import JFrameUndoRedoBtnDemoComp from 'src/projects/jframes/ContentUndoRedoDemoApp';
+import EmAsyncifyExample from "src/projects/em_asyncify_example.out.wasm?init" ;
+import emAsyncifyExampleAgain from "src/projects/em_asyncify_example1" ; //
 //
 import './App.css'
 
@@ -46,3 +48,36 @@ const IJFrameDemo = (
 ) ;
 
 export default App
+
+null || (async () => {
+  type IWeav = WebAssembly.ExportValue ;
+  if (0) {
+    ;
+    const { main, } = (
+      (
+        (await EmAsyncifyExample({
+          imports: {
+            // a: () => { throw new Error("imports.a"); }, 
+            // a: {
+            //   // modules: {} ,
+            //   a: () => { throw new Error("imports.a"); } ,
+            // } ,
+            get a(): never { throw new Error("imports.a"); } ,
+          } ,
+        }))
+        .exports
+      ) satisfies WebAssembly.Exports
+    ) ;
+    console["log"]({ main, }) ; //
+  }
+  if (1) {
+    ;
+    const m = emAsyncifyExampleAgain ;
+    console["log"]({ m, }) ;
+    (async () => {
+      const exp = await emAsyncifyExampleAgain() ;
+      console["log"]({ exp, }) ;
+    } )() ;
+  }
+  // import("src/projects/em_asyncify_examplem.cjs");
+})();

@@ -4,22 +4,17 @@ import 'src/setupIonicReact1'
 import WithErrorBound from './projects/JsxErrorBound'
 import { IonApp, IonContent, } from '@ionic/react' 
 import App from './App'
-// import * as assert from "assert" ;
-// (assert as (typeof assert extends infer O ? { [k in keyof O ]: O[k] } : never )).ok = (v, m) => {
-//   if (v) {
-//     //
-//   } else {
-//     if (m instanceof Error) throw m ;
-//     throw new Error(m) ;
-//   }
-// } ;
+import "src/projects/xmf/main";
 import './index.css'
 
 /** 
  * added boundaries:
- * - {@link WithErrorBound} to add possible "complaint and restart" btn
- * - {@link IonApp} to avoid issues with overlays and etc not working properly
- * - {@link IonContent} to avoid page clipping
+ * - {@link WithErrorBound} 
+ *   to add possible "complaint and quick-restart" btn
+ * - {@link IonApp}, given the usage(s) of Ionic Components,
+ *   to avoid issues with them not working properly
+ * - {@link IonContent}, when using {@link IonApp}, 
+ *   to avoid page clipping
  * 
  */
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

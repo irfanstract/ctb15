@@ -35,16 +35,16 @@ export const ContentWithOpListingAndStatBarAggregatingComp = (
       <div
       style={{
         display: "flex" ,
-        flexDirection: "column-reverse" ,
+        flexDirection: "column" ,
       }}
       >
         <div style={{ order: 0, }} >
           { mainContent }
         </div>
-        <div className={`${JFrameCss.JfrAside } ` } style={{ order: 1000, zoom: `80%`, }} >
+        <div className={`${JFrameCss.JfrAside } ` } style={{ order: -1000, zoom: `80%`, }} >
           { windowMgmtMenuBar }
         </div>
-        <div className={`${JFrameCss.JfrAside } ` } style={{ order: -1000, zoom: `80%`, }} >
+        <div className={`${JFrameCss.JfrAside } ` } style={{ order: 1000, zoom: `80%`, }} >
           { statsBar }
         </div>
       </div>

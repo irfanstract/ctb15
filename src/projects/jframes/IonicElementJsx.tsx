@@ -26,12 +26,21 @@ export { Ionic, } ;
 
 import { IonFoldedMenuComp, } from "./PopupMenu";
 
+// import { defsTimeKey as defsTimeKey1, } from "./PopupMenu";
+// export { defsTimeKey1, } ;
+;
+
 /** 
  * `<ion-item>`s can natively be buttons, and in such case
  * it shall never contain `<button>`s
  * 
  */
-export const renderIonicItemFromElement = (
+export const renderIonicItemFromElement: {
+  (...args: Parameters<typeof renderIonicItemFromElementImpl>): util.React.ReactElement ;
+} = (...args ) => (
+  renderIonicItemFromElementImpl(...args)
+) ;
+const renderIonicItemFromElementImpl = (
   function AGAIN(e: util.React.ReactElement): util.React.ReactElement {
     // console["log"]({ e, }) ;
     if (1) {

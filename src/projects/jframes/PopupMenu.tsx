@@ -76,10 +76,15 @@ export const {
   PlainFoldedMenuComp ,
   IonFoldedMenuComp ,
 } = (() => {
+  const defsTimeKey: util.React.Key = (
+    String(Math.random() )
+  ) ;
+  
   const getRenderer = (({
 
     renderHbn: Hbn ,
 
+    renderItemList,
     asProperlyDecoratedItem ,
     renderItemBeingButtonlike ,
     
@@ -137,7 +142,11 @@ export const {
           id: designatedId + "-OpeningTrigger" ,
           className: `${JFrameCss.PopupElMetaCtrlBtn } ` ,
           onClick: ONCLICK_IONIC_POP ,
-          children: label ,
+          children: (
+            <>
+            { label } <Ionic.Icon icon={ionIcons.ellipsisVertical } /> 
+            </>
+          ) ,
         })
       ) ;
       /** 
@@ -168,7 +177,6 @@ export const {
        */
       const popupContents = (
         <div 
-        className={` ${JFrameCss.PopupItemsContainer } `}
         onClick={e => {
           if (deservesManualAutoDismiss) {
             ;
@@ -185,7 +193,17 @@ export const {
           }
         }}
         >
-          { itemsFinal }
+        {(
+        // <div 
+        // className={` ${JFrameCss.PopupItemsContainer } `}
+        // >
+        //   { itemsFinal }
+        // </div>
+        renderItemList({
+          className: ` ${JFrameCss.PopupItemsContainer } ` ,
+          children: itemsFinal ,
+        })
+        )}
         </div>
       ) ;
       /** 
@@ -229,7 +247,10 @@ export const {
           shallCauseCollapse ,
         } ;
       }) satisfies { 
-        (...a: Parameters<JSX.IntrinsicElements["div"]["onClick"] & Function>): object ; 
+        (...a: util.Parameters<(
+          & JSX.IntrinsicElements["div"]
+          & util.React.ComponentProps<typeof Ionic.List>
+        )["onClick"] & Function>): object ; 
       } ;
       const onBlur: Required<JSX.IntrinsicElements["div"]>["onBlur"] = (
         e => {
@@ -237,18 +258,22 @@ export const {
         } 
       ) ;
       return (
-        // <div 
-        // className={`${JFrameCss.Popup } ${JFrameCss.PopupBpv } ` }
-        // onBlur={onBlur }
-        // >
-        //   { headingBtn }
-        //   { popupible }
-        // </div>
-        Hbn({
-          headingBtn ,
-          expansion: popupible ,
-          onBlur ,
-        })
+        <util.React.Fragment key={defsTimeKey } >
+        { (
+          // <div 
+          // className={`${JFrameCss.Popup } ${JFrameCss.PopupBpv } ` }
+          // onBlur={onBlur }
+          // >
+          //   { headingBtn }
+          //   { popupible }
+          // </div>
+          Hbn({
+            headingBtn ,
+            expansion: popupible ,
+            onBlur ,
+          })
+        ) }
+        </util.React.Fragment>
       ) ;
     })
   )) satisfies {
@@ -270,6 +295,13 @@ export const {
             & {
               onBlur: Required<JSX.IntrinsicElements["div"]>["onBlur"] ;
             }
+          )): util.React.ReactElement ;
+        } ;
+
+        renderItemList: {
+          (props: (
+            & util.React.ComponentPropsWithoutRef<"div">
+            & util.React.ComponentPropsWithoutRef<typeof Ionic.List>
           )): util.React.ReactElement ;
         } ;
     
@@ -398,24 +430,25 @@ export const {
         ) ;
       },
 
+      renderItemList: (props) => (<div {...props} />),
       asProperlyDecoratedItem: (e) => e ,      
       renderItemBeingButtonlike: ({
         children: usrLabel ,
         onClick ,
-        ...props
+        ...otherProps
       }) => {
         const label = (
           <>
-          { usrLabel } <Ionic.Icon icon={ionIcons.ellipsisVertical } />
+          <span>{ usrLabel }</span> 
           </>
         ) ;
         if (onClick === ONCLICK_IONIC_POP) {
           return (
-            <button type="button" {...props} children={label} /> 
+            <button type="button" {...otherProps} children={label} /> 
           ) ;
         }
         return (
-          <OpButton onClick={onClick } {...props} children={label} /> 
+          <OpButton onClick={onClick } {...otherProps} children={label} /> 
         ) ;
       } ,
 
@@ -439,6 +472,7 @@ export const {
         ) ;
       },
 
+      renderItemList: (props) => (<Ionic.List lines="none" {...props} />),
       asProperlyDecoratedItem: (
         e => {
           if (e.type === IonFoldedMenuComp) {
@@ -456,16 +490,19 @@ export const {
       }) => {
         const label = (
           <>
-          { usrLabel } <Ionic.Icon icon={ionIcons.ellipsisVertical } />
+          <span>{ usrLabel }</span> 
           </>
         ) ;
-        if (onClick === ONCLICK_IONIC_POP) {
-          return (
-            <Ionic.Item button type="button" {...props} children={label} /> 
-          ) ;
-        }  
         return (
-          <Ionic.Item button type="button" onClick={onClick } {...props} children={label} /> 
+          <Ionic.Item 
+          button 
+          type="button" 
+          {...(
+            (onClick === ONCLICK_IONIC_POP) ? { } : { onClick: onClick, }
+          )}
+          {...props} 
+          children={label} 
+          /> 
         ) ;
       } ,
 
@@ -479,6 +516,10 @@ export const {
 export const FoldedMenuComp = (
   IonFoldedMenuComp
 ) ;
+
+const messages = {
+  // IsDirectoryRatherThanLeaf: 5 ,
+} satisfies { [k: string]: string ; } ;
 
 /** 
  * rather than passing a `function`,

@@ -28,6 +28,7 @@ const FilevwFrameComp = (
     style: styleProps ,
     editHandler ,
     undoManager ,
+    mainDocContentView: mainDocContentView0 ,
   }) {
     const windowMgmtMenuBar = (
       renderBasicRichMenuBar({
@@ -45,22 +46,52 @@ const FilevwFrameComp = (
         </button>
       </Ionic.ToolBar>
     ) ;
-    const mainDocContentView = (
+    const mainDocContentView = mainDocContentView0 || (
       <div>
         <p>
-          User Content Goes Here
+          User Content Goes Here 1
         </p>
         <p>
-          User Content Goes Here
+          User Content Goes Here 2
         </p>
         <p>
-          User Content Goes Here
+          User Content Goes Here 3
         </p>
         <p>
-          User Content Goes Here
+          User Content Goes Here 4
         </p>
         <p>
-          User Content Goes Here
+          User Content Goes Here 5
+        </p>
+        <p>
+          User Content Goes Here 1
+        </p>
+        <p>
+          User Content Goes Here 2
+        </p>
+        <p>
+          User Content Goes Here 3
+        </p>
+        <p>
+          User Content Goes Here 4
+        </p>
+        <p>
+          User Content Goes Here 5
+        </p>
+        <p>
+          User Content Goes Here 1
+        </p>
+        <p>
+          User Content Goes Here 2
+        </p>
+        <p>
+          User Content Goes Here 3
+        </p>
+        <p>
+          User Content Goes Here 4
+        </p>
+        <p>
+          User Content Goes Here 5
         </p>
       </div>
     ) ;
@@ -79,7 +110,7 @@ const FilevwFrameComp = (
       }}
       >
         <div style={{ order: 0 , }}>
-          <div className="JFrameContent " >
+          <div className="JFrameContent " style={{ overflow: "auto", }} >
           { mainDocContentView }
           </div>
         </div>
@@ -110,6 +141,7 @@ const FilevwFrameComp = (
     util.React.FC<(
       & util.PickAll<JSX.IntrinsicElements["div"], keyof util.React.ComponentProps<typeof JFrameComp> >
       & EditorOptions
+      & { mainDocContentView ?: util.React.ReactElement ; }
     )>
   )
 ) ;
