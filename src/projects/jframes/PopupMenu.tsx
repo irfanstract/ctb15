@@ -34,7 +34,7 @@ import { renderIonicItemFromElement, } from "./IonicElementJsx";
 
 
 
-import { componentTreeJFrameAssocs, } from "./FileEditViewWindowComponent";
+import { componentTreeJFrameAssocs, } from "./JFrameComponent";
 
 import { JFrameCss, } from "src/projects/jframes/util";
 /** 
@@ -209,6 +209,7 @@ export const {
       ) ;
     })
   )) satisfies {
+    
     (options: (
       {}
       & {
@@ -252,8 +253,71 @@ export const {
   
       }
     )) : util.React.FC<any> ;
+
+  } ;
+  const useXController1 = () => {
+    const {
+      WithAssociatedJFrame ,
+      useCurrentAssociatedJFrame ,
+    } = componentTreeJFrameAssocs ;
+    ;
+    const [expndElemRefed, expndElemRefUpdate] = (
+      util.React.useState<null | HTMLIonPopoverElement>(null) 
+    ) ;
+    const currentlyJFrameController = (
+      useCurrentAssociatedJFrame()
+    ) ;
+    util.React["useLayoutEffect"](() => {
+      if (currentlyJFrameController && expndElemRefed) {
+        currentlyJFrameController.registeredPopupControllerSet.add(expndElemRefed);
+        return (): void => {
+          currentlyJFrameController.registeredPopupControllerSet.delete(expndElemRefed);
+        } ;
+      }
+    } , [
+      currentlyJFrameController,
+      expndElemRefed ,
+    ] );
+    const exports1 = (
+      util.React.useMemo(() => (
+        {
+          expndElemRefed ,
+          currentlyJFrameController ,
+          setExpanded(v): void {
+            if (!expndElemRefed) return ;
+            v ? expndElemRefed.present() : expndElemRefed.dismiss() ;
+          },
+          setExpandedDueToEvent(evt): void {
+            if (!expndElemRefed) return ;
+            expndElemRefed.present(evt) ;
+          },
+          isExpanded: () => (
+            (expndElemRefed && expndElemRefed.isOpen) || false
+          ) ,
+          
+        } satisfies (
+          FoldedMenuCompController & {
+            expndElemRefed: unknown ,
+            currentlyJFrameController: unknown ,
+          }
+        )
+      ), [
+        expndElemRefed,
+        currentlyJFrameController ,
+      ])
+    ) ;
+    ;
+    return (
+      [
+        exports1 ,
+        {
+          expndElemRefUpdate ,
+        } ,
+      ] satisfies [exports: object, init: object, ...etc: unknown[]]
+    )
   } ;
   return {
+
     PlainFoldedMenuComp: getRenderer({
 
       asProperlyDecoratedItem: (e) => e ,      
@@ -280,6 +344,7 @@ export const {
       deservesManualAutoDismiss: true ,
 
     }) ,
+
     IonFoldedMenuComp: getRenderer({
       
       asProperlyDecoratedItem: (
@@ -308,11 +373,14 @@ export const {
       deservesManualAutoDismiss: true ,
       
     }) ,
+    
   } ;
 })() ;
+
 export const FoldedMenuComp = (
   IonFoldedMenuComp
 ) ;
+
 /** 
  * rather than passing a `function`,
  * pass this special-value, causing the resulting button to be "ionic"
@@ -326,67 +394,6 @@ export const FoldedMenuComp = (
  * 
  */
 const ONCLICK_IONIC_POP = Symbol() ;
-const useXController1 = () => {
-  const {
-    WithAssociatedJFrame ,
-    useCurrentAssociatedJFrame ,
-  } = componentTreeJFrameAssocs ;
-  ;
-  const [expndElemRefed, expndElemRefUpdate] = (
-    util.React.useState<null | HTMLIonPopoverElement>(null) 
-  ) ;
-  const currentlyJFrameController = (
-    useCurrentAssociatedJFrame()
-  ) ;
-  util.React["useLayoutEffect"](() => {
-    if (currentlyJFrameController && expndElemRefed) {
-      currentlyJFrameController.registeredPopupControllerSet.add(expndElemRefed);
-      return (): void => {
-        currentlyJFrameController.registeredPopupControllerSet.delete(expndElemRefed);
-      } ;
-    }
-  } , [
-    currentlyJFrameController,
-    expndElemRefed ,
-  ] );
-  const exports1 = (
-    util.React.useMemo(() => (
-      {
-        expndElemRefed ,
-        currentlyJFrameController ,
-        setExpanded(v): void {
-          if (!expndElemRefed) return ;
-          v ? expndElemRefed.present() : expndElemRefed.dismiss() ;
-        },
-        setExpandedDueToEvent(evt): void {
-          if (!expndElemRefed) return ;
-          expndElemRefed.present(evt) ;
-        },
-        isExpanded: () => (
-          (expndElemRefed && expndElemRefed.isOpen) || false
-        ) ,
-        
-      } satisfies (
-        FoldedMenuCompController & {
-          expndElemRefed: unknown ,
-          currentlyJFrameController: unknown ,
-        }
-      )
-    ), [
-      expndElemRefed,
-      currentlyJFrameController ,
-    ])
-  ) ;
-  ;
-  return (
-    [
-      exports1 ,
-      {
-        expndElemRefUpdate ,
-      } ,
-    ] satisfies [exports: object, init: object, ...etc: unknown[]]
-  )
-} ;
 
 
 

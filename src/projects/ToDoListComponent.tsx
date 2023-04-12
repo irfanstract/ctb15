@@ -72,7 +72,7 @@ const ToDoListComponent: (
   )>
 ) = ({
   value: tasks0 ,
-  onMarkItemAsCompleted ,
+  onMarkItemAsCompleted: implMarkItemAsCompleted ,
   onItemReorder: onItemReorder ,
 }) => {
   const {
@@ -168,20 +168,19 @@ const ToDoListComponent: (
               (() => {
                 B1:
                 {
+                  if (!implMarkItemAsCompleted) {
+                    break B1 ;
+                  }
                   if ((1 < mAssignees.length)) {
                     break B1 ;
                   }
-                  if (onMarkItemAsCompleted) {
-                    return (
-                      () => {
-                        return (
-                          onMarkItemAsCompleted({
-                            i: entryOrdinal ,
-                          })
-                        ) ;
-                      }
-                    ) ;
-                  }
+                  return (
+                    () => (
+                      implMarkItemAsCompleted({
+                        i: entryOrdinal ,
+                      })
+                    )
+                  ) ;
                 }
                 return false ;
               })()
@@ -195,7 +194,9 @@ const ToDoListComponent: (
             </IonReorder>
             <div>
               { titleDisplay }
+              <details>
               { assignmentalDisplay }
+              </details>
               { completionalStatDisplay }
             </div>
             </IonItem>
