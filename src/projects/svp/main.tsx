@@ -17,6 +17,12 @@ export default (
       setHoverPos ,
     } = useXHoverState() ;
     return (
+      <div
+      style={{
+        display: "flex" ,
+        flexDirection: "column" ,
+      }}
+      >
       <svg 
       className={`SvpMain ` }
       viewBox={`0 0 500 250 `}
@@ -36,6 +42,21 @@ export default (
         />
       )}
       />
+      <div>
+        <table>
+          <tbody>
+          <tr>
+            <td>Pos:</td>
+            <td>
+            <pre>
+              { JSON.stringify(hoverPos, null, 2) }
+            </pre> 
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      </div>
     ) ;
   })
 ) ;
