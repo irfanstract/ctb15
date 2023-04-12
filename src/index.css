@@ -78,6 +78,10 @@ ion-list {
   zoom: 90% ;
 }
 
+td {
+  vertical-align: text-top;
+}
+
 .JFrame {
   display: block;
   margin: 0.5em;
