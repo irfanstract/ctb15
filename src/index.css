@@ -102,6 +102,10 @@ ion-list {
   text-align: start;
 }
 
+.SvpMain {
+  background: rgb(255, 224, 128);
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
