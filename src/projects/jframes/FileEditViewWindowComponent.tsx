@@ -19,132 +19,167 @@ import { Ionic, } from "src/projects/jframes/util";
 
 import { FoldedMenuComp, } from "./PopupMenu";
 
-const JFrameComp = (
-  (({
-    style: styleProps ,
-    editHandler ,
-    undoManager ,
-  }) => {
-    const windowMgmtMenuBar = (
-      renderDemoMenuBar({
-        editHandler ,
-        undoManager ,
-      })
-    ) ;
-    const debugSideBar = (
-      <Ionic.ToolBar>
-        <button>
-          24 lines
-        </button>
-        <button>
-          24 lines
-        </button>
-      </Ionic.ToolBar>
-    ) ;
-    const mainContent = (
-      <div>
-        <p>
-          User Content Goes Here
-        </p>
-        <p>
-          User Content Goes Here
-        </p>
-        <p>
-          User Content Goes Here
-        </p>
-        <p>
-          User Content Goes Here
-        </p>
-        <p>
-          User Content Goes Here
-        </p>
-      </div>
-    ) ;
-    const frequentToolsBar = (
-      <Ionic.ToolBar>
-        <OpButton 
-        children={<Ionic.Icon icon={ionIcons.arrowUndo } /> }
-        onClick={undoManager?.undo }
-        />
-        <OpButton
-        children={<Ionic.Icon icon={ionIcons.arrowRedo } /> }
-        onClick={undoManager?.redo }
-        />
-        <OpButton 
-        children={<Ionic.Icon icon={ionIcons.cut } /> }
-        onClick={editHandler?.invokeCut }
-        />
-        <OpButton 
-        children={<Ionic.Icon icon={ionIcons.copy } /> }
-        onClick={editHandler?.invokeCopy }
-        />
-        <OpButton 
-        children={<Ionic.Icon icon={ionIcons.clipboard } /> }
-        onClick={editHandler?.invokePaste }
-        />
-      </Ionic.ToolBar>
-    ) ;
-    const nonSidebarContent = (
-      <div>
-        { frequentToolsBar }
-        <div className="JFrameContent" >
-        { mainContent }
-        </div>
-      </div>
-    ) ;
-    const masterController = (
-      util.React.useMemo<JFrameController>(() => (
-        new (class implements JFrameController {
-          closeAllPopups = () => (
-            this.registeredPopupControllerSet
-            .forEach(c => c.dismiss() )
-          ) ;
-          registeredPopupControllerSet = (
-            new Set<HTMLIonPopoverElement>()
-          ) ;
+const JFrameComp = (() => {
+  return (
+    (function JFrameCompImpl({
+      style: styleProps ,
+      editHandler ,
+      undoManager ,
+    }) {
+      const windowMgmtMenuBar = (
+        renderDemoMenuBar({
+          editHandler ,
+          undoManager ,
         })
-      ), [])
-    ) ;
-    const cssId = (
-      util.React.useId()
-    ) ;
-    return (
-      <WithGivenAssociatedJFrame value={masterController } >
-      <div
-      className="JFrame "
-      style={{
-        ...styleProps ,
-      }}
-      >
-      <div
-      id={cssId + "-c"}
-      >
+      ) ;
+      const statsBar = (
+        <Ionic.ToolBar>
+          <button>
+            24 lines
+          </button>
+          <button>
+            24 lines
+          </button>
+        </Ionic.ToolBar>
+      ) ;
+      const mainDocContentView = (
+        <div>
+          <p>
+            User Content Goes Here
+          </p>
+          <p>
+            User Content Goes Here
+          </p>
+          <p>
+            User Content Goes Here
+          </p>
+          <p>
+            User Content Goes Here
+          </p>
+          <p>
+            User Content Goes Here
+          </p>
+        </div>
+      ) ;
+      const frequentToolsBar = (
+        <Ionic.ToolBar>
+          <OpButton 
+          children={<Ionic.Icon icon={ionIcons.arrowUndo } /> }
+          onClick={undoManager?.undo }
+          />
+          <OpButton
+          children={<Ionic.Icon icon={ionIcons.arrowRedo } /> }
+          onClick={undoManager?.redo }
+          />
+          <OpButton 
+          children={<Ionic.Icon icon={ionIcons.cut } /> }
+          onClick={editHandler?.invokeCut }
+          />
+          <OpButton 
+          children={<Ionic.Icon icon={ionIcons.copy } /> }
+          onClick={editHandler?.invokeCopy }
+          />
+          <OpButton 
+          children={<Ionic.Icon icon={ionIcons.clipboard } /> }
+          onClick={editHandler?.invokePaste }
+          />
+        </Ionic.ToolBar>
+      ) ;
+      const mainContent = (
         <div
+        className="JFrameContentAndToolbar "
         style={{
           display: "flex" ,
           flexDirection: "column-reverse" ,
         }}
         >
-          <div style={{ order: -5000, }} >
-            { nonSidebarContent }
+          <div style={{ order: 0 , }}>
+            <div className="JFrameContent " >
+            { mainDocContentView }
+            </div>
           </div>
-          <div style={{ order: -1000, }} >
-            { windowMgmtMenuBar }
-          </div>
-          <div style={{ order: -9000, }} >
-            { debugSideBar }
+          <div style={{ order: 1000 , }}>
+            { frequentToolsBar }
           </div>
         </div>
+      ) ;
+      const masterController = (
+        util.React.useMemo<JFrameController>(() => (
+          new (class implements JFrameController {
+            closeAllPopups = () => (
+              this.registeredPopupControllerSet
+              .forEach(c => c.dismiss() )
+            ) ;
+            registeredPopupControllerSet = (
+              new Set<HTMLIonPopoverElement>()
+            ) ;
+          })
+        ), [])
+      ) ;
+      const cssId = (
+        util.React.useId()
+      ) ;
+      return (
+        <WithGivenAssociatedJFrame value={masterController } >
+        <div
+        className="JFrame "
+        style={{
+          ...styleProps ,
+        }}
+        >
+        <div
+        id={cssId + "-c"}
+        >
+          <ContentWithOpListingAndStatBarAggregatingComp 
+          {...{
+            mainContent ,
+            opListing: windowMgmtMenuBar ,
+            statsBar ,
+          }}
+          />
+        </div>
+        </div>
+        </WithGivenAssociatedJFrame>
+      ) ;
+    }) satisfies (
+      util.React.FC<(
+        & { style ?: util.React.CSSProperties ; }
+        & EditorOptions
+      )>
+    )
+  ) ;
+})() ;  
+const ContentWithOpListingAndStatBarAggregatingComp = (
+  (function ({
+    mainContent ,
+    opListing: windowMgmtMenuBar ,
+    statsBar ,
+  } ) {
+    return (
+      <div
+      style={{
+        display: "flex" ,
+        flexDirection: "column-reverse" ,
+      }}
+      >
+        <div style={{ order: 0, }} >
+          { mainContent }
+        </div>
+        <div style={{ order: 1000, }} >
+          { windowMgmtMenuBar }
+        </div>
+        <div style={{ order: -1000, }} >
+          { statsBar }
+        </div>
       </div>
-      </div>
-      </WithGivenAssociatedJFrame>
     ) ;
-  }) satisfies (
-    util.React.FC<(
-      & { style ?: util.React.CSSProperties ; }
-      & EditorOptions
-    )>
-  )
+  }) satisfies {
+    (props: {
+      mainContent: util.React.ReactElement ;
+      opListing: util.React.ReactElement ;
+      statsBar?: util.React.ReactElement ;
+    }): util.React.ReactElement ;
+  }
 ) ;
 
 interface JFrameController {

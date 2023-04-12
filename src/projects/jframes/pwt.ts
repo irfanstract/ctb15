@@ -7,11 +7,6 @@
 
 
 
-export type ConjunctionFromAlternation<A> = (
-  (A extends (infer A1) ? { (value: A1): void ; } : never ) extends { (value: infer A2): unknown ; } ?
-  A2 : never
-) ;
-
 ;
 /**
  * due to the resulting type-mismatch issues,
@@ -19,9 +14,6 @@ export type ConjunctionFromAlternation<A> = (
  * 
  */
 export type PropsWithoutConflicts<A0 extends { [k: string | number | symbol]: unknown ; }> = (
-  // AsEachFromAcceptor<(
-  //   AsEachAsAcceptor<A0>
-  // )>
   ConjunctionFromAlternation<A0>
 ) ;
 /** 
@@ -32,12 +24,7 @@ export type AsEachAsAcceptor<A0> = (
   { [k in keyof A0]: AsEachAsAcceptorImpl<A0>[k] ; }
 );
 export type AsEachAsAcceptorImpl<A0> = (
-  // A0 extends infer A extends { [k: string | number | symbol]: unknown ; } ? (
-  //   [(keyof A) & {}] extends [infer AKey extends string | number | symbol] ?
-  //   { [k in AKey] -?: [A[k] extends infer P ? ((value: P) => void) : never] extends [infer PV extends ((v: never) => void)] ? PV : never ; }
-  //   : never
-  // ) : never
-  { [k in (keyof A0) & {}] /* REQUIRED */ -?: (value: A0[k]) => void ; }
+  { [k in (keyof A0) & {}] /* OBLIGE */ -?: (value: A0[k]) => void ; }
 );
 
 /** 
@@ -48,10 +35,8 @@ export type AsEachFromAcceptor<A0 extends { [k: string | number | symbol]: (valu
   { [k in keyof A0]: AsEachFromAcceptorImpl<A0>[k] ; }
 ) ;
 type AsEachFromAcceptorImpl<A0 extends { [k: string | number | symbol]: (value: never) => unknown ; }> = (
-  { [k in (keyof A0) & {}] -?: (
+  { [k in (keyof A0) & {}] /* OBLIGE */ -?: (
     Parameters<A0[k]>[0]
-    // Parameters<A0[k]>
-    // A0[k]
   ) ; }
 ) ;
 
@@ -76,6 +61,23 @@ type Ptt = ([x ?: string] & [x ?: number]) ;
 [] satisfies Ptt;
 type PttF = ([x ?: (id: number) => void] & [x ?: (id: string) => void]) ;
 [(ident) => {}, ] satisfies PttF;
+
+/** 
+ * `A1 & A2 & A3` given `A1 | A2 | A3`
+ * 
+ * @deprecated
+ * union-types representations can change depending on implementation, and in general
+ * union-types present ambiguity in face of {@link Exclude distributivity}
+ */
+export type ConjunctionFromAlternation<A> = (
+  (A extends (infer A1) ? { (value: A1): void ; } : never ) extends { (value: infer A2): unknown ; } ?
+  A2 : never
+) ;
+
+
+
+
+
 
 
 
@@ -124,6 +126,7 @@ type PccTestFunctions1A = (
 type PccTestFunctions1C = (
   AsEachFromAcceptor<PccTestFunctions>
 ) ;
+type EPC = ({ value: 3 } | { value?: 4 }) extends infer C ? ({ [k1 in keyof C]: (...values: C[]) => void ; } ) : never ;
 // [(arg) => {}, f => {} , ] satisfies [
 //   PccTestFunctions1C["onClick"], 
 //   (...args: Parameters<PccTestFunctions1C["onClick"]>) => void ,
