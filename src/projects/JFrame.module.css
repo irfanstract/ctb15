@@ -12,6 +12,7 @@
 
 
 
+
 .JFrame {}
 
 
@@ -20,6 +21,7 @@
 .Menubar {
   display: flex;
   flex-direction: row;
+  overflow: auto;
 }
 
 
@@ -28,21 +30,8 @@
 
 
 
-.PopupCd2 {
-  display: block;
-  position: relative;
-  transition: all 1s ease-out;
-  overflow-block: hidden;
-  overflow: hidden;
-}
-.PopupCd2 {
-  max-block-size: 0em; 
-  opacity: 0;
-}
-.Popup:focus-within > .PopupCd2 {
-  max-block-size: 30em; 
-  opacity: 1;
-  display: block;
+.Popup {
+  text-align: start;
 }
 
 .PopupItemsContainer {
@@ -51,6 +40,15 @@
   padding-block-end: 0.75em;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  align-items: stretch;
+}
+
+.PopupBpv {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-items: stretch;
 }
 
 
