@@ -20,8 +20,6 @@ import {
   IonReorder ,
 } from "@ionic/react" ;
 
-import TdlCss from "./TDL.module.css" ;
-
 const tlcExemplaryTasksList = (
   [
     {
@@ -96,7 +94,7 @@ const ToDoListComponent: (
     })() 
   ) ;
   return (
-    <div className={`${TdlCss.ToDoList } md ` }> 
+    <div className={`ToDoList md ` }> 
       <p>
         To-Do List
       </p>

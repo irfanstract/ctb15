@@ -60,6 +60,22 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.JFrame {
+  display: block;
+  border: 0.1em solid currentColor;
+  border-radius: 0.5em;
+  padding: 0.5em;
+  text-align: start;
+  inline-size: calc(min(100%, 28em ) ) ;
+}
+
+.ToDoList {
+  border: 0.05em solid currentColor;
+  border-radius: 0.5em;
+  padding: 0.5em;
+  text-align: start;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
