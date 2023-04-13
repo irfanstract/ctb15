@@ -22,11 +22,11 @@ type SupportedCaTypeImpl = (
 export type SupportedCaType = (
   keyof SupportedCaDescTable
 ) ;
-export type SupportedCaDescTable = (
-  { [type1 in SupportedCaTypeImpl]: { type: type1 ; } & SupportedCaProps[type1] ; }
-) ;
 export type SupportedCaDesc<Type extends SupportedCaType = SupportedCaType> = (
   SupportedCaDescTable[Type]
+) ;
+export type SupportedCaDescTable = (
+  { [type1 in SupportedCaTypeImpl]: { type: type1 ; } & SupportedCaProps[type1] ; }
 ) ;
 export function renderEditorForCa<CaType extends SupportedCaType>(...args: (
   Parameters<typeof renderEditorForCaImpl<CaType>>
