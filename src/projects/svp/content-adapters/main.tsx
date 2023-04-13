@@ -19,9 +19,17 @@ type SupportedCaProps = (
 type SupportedCaTypeImpl = (
   keyof SupportedCaProps
 ) ;
+/** 
+ * every supported *type*.
+ * 
+ */
 export type SupportedCaType = (
   keyof SupportedCaDescTable
 ) ;
+/** 
+ * every supported model.
+ * 
+ */
 export type SupportedCaDesc<Type extends SupportedCaType = SupportedCaType> = (
   SupportedCaDescTable[Type]
 ) ;
