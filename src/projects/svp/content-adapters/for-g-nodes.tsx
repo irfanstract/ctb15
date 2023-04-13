@@ -84,8 +84,8 @@ export const main = (
           />
           { hoverPos && (
           <g style={{ pointerEvents: "none", }}>
-            <path d={`M ${hoverPos.x} -1000 V 1000 z` } stroke="black" strokeWidth={1} />
-            <path d={`M -1000 ${hoverPos.y} H 1000 z` } stroke="black" strokeWidth={1} />
+            <path d={`M ${hoverPos.x} -1000 V 1000 z` } stroke="black" strokeWidth={0.5} />
+            <path d={`M -1000 ${hoverPos.y} H 1000 z` } stroke="black" strokeWidth={0.5} />
           </g>
           ) }
           </g>
