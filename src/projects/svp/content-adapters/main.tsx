@@ -73,8 +73,6 @@ const renderEditorForCaImpl = (
 
 
 import type { XAppProps as XGP, } from "src/projects/svp/content-adapters/for-g-nodes";
-import { main as xg, } from "src/projects/svp/content-adapters/for-g-nodes";
-import { main as xp, } from "src/projects/svp/content-adapters/for-path-nodes";
 
 0 && console["log"](TypeError()) ;
 
@@ -106,6 +104,8 @@ const main = ({
 }) satisfies (
   { [key: string]: CaBaseOps ; }
 ) ;
+import { main as xg, } from "src/projects/svp/content-adapters/for-g-nodes";
+import { main as xp, } from "src/projects/svp/content-adapters/for-path-nodes";
 
 export default main ;
 
