@@ -19,27 +19,33 @@ import type {
   SupportedCaDescTable ,
   SupportedCaType ,
   CaBaseOps ,
+  EntryInstCtx ,
 } from "src/projects/svp/content-adapters/main";  
  
-export const R : MainOps["render"] = (...[
-  { spec, } ,
-] ) => {
-  // TODO
-  return (
-    <path 
-    d={spec }
-    fill="blue"
-    />
-  ) ;
-} ;
-
 export const main = (
-  ({
-    render: R ,
-    Props: (
-      util.Constructor.getNonFunctionalInstance()
-    ) ,
-  }) satisfies MainOps
+  (...[{
+    renderEditorForItem ,
+  }] : [EntryInstCtx,] ) => {
+    const R : MainOps["render"] = (...[
+      { spec, } ,
+    ] ) => {
+      // TODO
+      return (
+        <path 
+        d={spec }
+        fill="blue"
+        />
+      ) ;
+    } ;
+    return (
+      ({
+        render: R ,
+        Props: (
+          util.Constructor.getNonFunctionalInstance()
+        ) ,
+      }) satisfies MainOps
+    ) ;
+  }
 ) ;
 type MainOps = POps ;
 /** 
