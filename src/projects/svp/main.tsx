@@ -97,7 +97,7 @@ import {
 import {
   HoverListeningComp as HoverMnComp ,
 } from "src/projects/svp/pointerEventHandling" ;
-import { useXHoverState, } from "src/projects/svp/content-adapters/g-node-impl";
+import { useXHoverState, } from "src/projects/svp/content-adapters/for-g-nodes";
 
 
 
