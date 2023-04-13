@@ -93,69 +93,11 @@ export { CaBaseOps, } ;
 const main = ({
   g: xg , // //
   path: (
-    // new (class implements POps {
-      
-    //   Props = [] as {
-    //     spec: string ; 
-    //   }[] ;
-
-    //   render = (...[
-    //     { spec, } ,
-    //   ]: [this["Props"][number] ] ) => {
-    //     // TODO
-    //     return (
-    //       <path 
-    //       d={spec }
-    //       fill="blue"
-    //       />
-    //     ) ;
-    //   } ;
-
-    // })()
-    // {
-    //   Props: (
-    //     util.Constructor.getNonFunctionalInstance()
-    //   ) ,
-      
-    //   render: (...[
-    //     { spec, } ,
-    //   ] ) => {
-    //     // TODO
-    //     return (
-    //       <path 
-    //       d={spec }
-    //       fill="blue"
-    //       />
-    //     ) ;
-    //   } ,
-
-    // } satisfies POps
     xp 
   ) ,
 }) satisfies (
-  // {
-  //   [key in SupportedCaType]: (
-  //     { 
-  //       render : util.React.FC<SupportedCaProps[key] > ;
-  //     }
-  //   ) ;
-  // }
   { [key: string]: CaBaseOps ; }
 ) ;
-/** 
- * the specialisation of {@link CaBaseOps} for `path`s.
- * 
- */
-// interface POps extends CaBaseOps {
-//   Props: (
-//     util.Constructor.AtContravar<(
-//       & {
-//         spec: string ; 
-//       }
-//     )>
-//   ) ;
-// } ;
-type POps = import("./for-path-nodes").POps ;
 
 export default main ;
 

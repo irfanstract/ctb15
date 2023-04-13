@@ -31,11 +31,6 @@ import {
   HoverListeningComp as HoverMnComp ,
 } from "src/projects/svp/pointerEventHandling" ;
 
-// export function useXHoverState(...args: Parameters<typeof useXHoverStateImpl> ) {
-//   return (
-//     useXHoverStateImpl(...args)
-//   ) ;
-// }
 export const useXHoverState = (
   (() => {
     const [hoverPos, setHoverPos] = (
