@@ -72,13 +72,12 @@ const renderEditorForCaImpl = (
 
 
 
-import type { XAppProps as XGP, } from "src/projects/svp/content-adapters/for-g-nodes";
-
 0 && console["log"](TypeError()) ;
 
 /** 
- * every peer shall conform to this `type`.
+ * every {@link main handler } shall conform to this `type`.
  * 
+ * @see {@link CaBaseOps }
  */
 interface CaBaseOps { 
   render : CaBaseOps.RenderCompImpl<this> ;
@@ -96,14 +95,39 @@ namespace CaBaseOps {
   ; // extra semicolon due to TS(1205)
 } ;
 export { CaBaseOps, } ;
-const main = ({
-  g: xg , // //
-  path: (
-    xp 
-  ) ,
-}) satisfies (
-  { [key: string]: CaBaseOps ; }
-) ;
+const main = (() => {
+  /** 
+   * the {@link EntryInstCtx} to use
+   * 
+   */
+  const injend = {
+    
+    renderEditorForItem: (
+      renderEditorForCa
+    ) ,
+
+  } satisfies EntryInstCtx ;
+  /** 
+   * 
+   */
+  return ({
+
+    g   : xg(injend) , 
+    path: xp(injend) ,
+    
+  }) satisfies (
+    { [key: string]: CaBaseOps ; }
+  ) ;
+})() ;
+/** 
+ * the ops/ctx/env/vars which the init shall give to each of the plugin(s)
+ * 
+ */
+export interface EntryInstCtx {
+  
+  renderEditorForItem: typeof renderEditorForCa ;
+
+}
 import { main as xg, } from "src/projects/svp/content-adapters/for-g-nodes";
 import { main as xp, } from "src/projects/svp/content-adapters/for-path-nodes";
 
