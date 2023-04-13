@@ -47,12 +47,11 @@ export const main = (
     ) ;
   }
 ) ;
-type MainOps = POps ;
 /** 
  * the specialisation of {@link CaBaseOps} for `path`s.
  * 
  */
-export interface POps extends CaBaseOps {
+export interface MainOps extends CaBaseOps {
   Props: (
     util.Constructor.AtContravar<(
       & {
