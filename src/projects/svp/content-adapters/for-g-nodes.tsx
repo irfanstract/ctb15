@@ -54,10 +54,6 @@ export const main = (
       ]) => {
         const Kk = util.React.Fragment ;
         ;
-        const {
-          hoverPos ,
-          setHoverPos ,
-        } = useXHoverState() ;
         ;
         const childItemsRendered = (
           childItems
@@ -78,16 +74,6 @@ export const main = (
         ) ;
         const hoverLayer = (
           <g>
-          <HoverMnComp 
-          onPointerLeave={() => setHoverPos(false) }
-          onPointerMoveRelative={evt => setHoverPos(evt.newPos ) }
-          />
-          { hoverPos && (
-          <g style={{ pointerEvents: "none", }}>
-            <path d={`M ${hoverPos.x} -1000 V 1000 z` } stroke="black" strokeWidth={0.5} />
-            <path d={`M -1000 ${hoverPos.y} H 1000 z` } stroke="black" strokeWidth={0.5} />
-          </g>
-          ) }
           </g>
         ) ;
         return (
