@@ -26,6 +26,10 @@ const content: contentHandling.SupportedCaDesc = {
       type: "path" ,
       spec: `M 0 0 L 200 0 L 0 200 Z ` ,
     } ,
+    {
+      type: "path" ,
+      spec: `M 0 0 L 200 0 L 200 200 Z ` ,
+    } ,
   ] ,
 } ;
 
