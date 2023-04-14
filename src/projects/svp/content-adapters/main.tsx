@@ -86,7 +86,7 @@ interface CaBaseOps {
 namespace CaBaseOps {
   
   export type RenderPropsImpl<This extends CaBaseOps> = (
-    Tcv<This["ContentProps"]>["newValue"]
+    util.Constructor.Tv<This["ContentProps"]>["newValue"]
   ) ;
   export type RenderCompImpl<This extends CaBaseOps> = (
     { (props: CaBaseOps.RenderPropsImpl<This>): util.React.ReactElement ; }
