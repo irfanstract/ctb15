@@ -50,39 +50,46 @@ export const main = (
   }] : [EntryInstCtx, ] ) => {
     const R : MainOps["render"] = (
       (...[
-        { transform, childItems, } ,
+        { 
+          transform: mTransform, 
+          childItems: mChildren, 
+        } ,
       ]) => {
         const Kk = util.React.Fragment ;
         ;
         ;
-        const childItemsRendered = (
-          childItems
+        const mChildrenRendered = (
+          mChildren
           .map((c, index) => (
             <Kk key={index } >
               { renderEditorForCa(c) }
             </Kk>
           ) )
         ) ;
-        const sSpec = (
+        const mTransformAttrParsed = (
           DOMMatrix.fromMatrix((
-            JSON.parse(transform)
+            JSON.parse(mTransform)
           ))
         ) ;
         ;
-        const contentsLayer = (
-          <g children={childItemsRendered } />
-        ) ;
-        const hoverLayer = (
-          <g>
-          </g>
-        ) ;
         return (
-          <g
-          transform={util.toCssTransformsString(sSpec) }
-          >
-            { contentsLayer }
-            { hoverLayer }
-          </g>
+          (() => {
+            const contentsLayer = (
+              <g children={mChildrenRendered } />
+            ) ;
+            const hoverLayer = (
+              <g>
+              </g>
+            ) ;
+            return (
+              <g
+              transform={util.toCssTransformsString(mTransformAttrParsed) }
+              >
+                { contentsLayer }
+                { hoverLayer }
+              </g>
+            ) ;
+          })()
         ) ;
       }
     ) ;
