@@ -45,7 +45,9 @@ export const main = (
         >
         <path 
         d={pathData }
-        fill="blue"
+        fill="none"
+        stroke="black"
+        strokeWidth={3 }
         />
         </g>
       ) ;
