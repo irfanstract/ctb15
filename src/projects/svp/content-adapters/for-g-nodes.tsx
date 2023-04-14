@@ -53,6 +53,7 @@ export const main = (
         { 
           transform: mTransform, 
           childItems: mChildren, 
+          onChange: propagateChangeEvt = Array.of ,
         } ,
       ]) => {
         const Kk = util.React.Fragment ;
@@ -62,7 +63,25 @@ export const main = (
           mChildren
           .map((c, index) => (
             <Kk key={index } >
-              { renderEditorForCa(c) }
+              { (
+                renderEditorForCa({ 
+                  ...c, 
+
+                  onChange: ({ newValue, }) => {
+                    propagateChangeEvt({
+                      newValue: {
+                        transform: mTransform ,
+                        childItems: (
+                          util.Immutable.List(mChildren)
+                          .set(index, newValue)
+                          .toArray()
+                        ) ,
+                      } ,
+                    }) ;
+                  } , 
+                  
+                })
+              ) }
             </Kk>
           ) )
         ) ;
