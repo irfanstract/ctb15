@@ -13,7 +13,7 @@ import * as util from "src/projects/svp/util" ;
 
 type SupportedCaProps = (
   { [key in keyof (typeof main)] : (
-    util.Constructor.Tv<(typeof main)[key]["Props"]>["newValue" | "value"]
+    util.Constructor.Tv<(typeof main)[key]["ContentProps"]>["newValue" | "value"]
   ) ; }
 ) ;
 type SupportedCaTypeImpl = (
@@ -81,12 +81,12 @@ const renderEditorForCaImpl = (
  */
 interface CaBaseOps { 
   render : CaBaseOps.RenderCompImpl<this> ;
-  Props : util.Constructor.AtContravar<never> ;
+  ContentProps : util.Constructor.AtContravar<never> ;
 } ;
 namespace CaBaseOps {
   
   export type RenderPropsImpl<This extends CaBaseOps> = (
-    Tcv<This["Props"]>["newValue"]
+    Tcv<This["ContentProps"]>["newValue"]
   ) ;
   export type RenderCompImpl<This extends CaBaseOps> = (
     { (props: CaBaseOps.RenderPropsImpl<This>): util.React.ReactElement ; }
