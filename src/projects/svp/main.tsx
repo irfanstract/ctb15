@@ -97,6 +97,12 @@ export default (
           </tr>
           </tbody>
         </table>
+        <button 
+        children={`Reset`}
+        onClick={() => (
+          setContent(content0 )
+        ) }
+        />
       </div>
       </div>
     ) ;
