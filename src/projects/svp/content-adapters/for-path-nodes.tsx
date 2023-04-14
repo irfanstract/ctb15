@@ -34,10 +34,20 @@ export const main = (
     ] ) => {
       // TODO
       return (
+        <g
+        onPointerDown={() => {
+          propagateChangeEvt({
+            newValue: {
+              spec: `M 200 200 h 32 v 32 h -32 z` ,
+            } ,
+          }) ;
+        } }
+        >
         <path 
         d={pathData }
         fill="blue"
         />
+        </g>
       ) ;
     } ;
     return (
