@@ -39,11 +39,10 @@ export type SupportedCaDescTable = (
 export function renderEditorForCa<CaType extends SupportedCaType>(...args: (
   Parameters<typeof renderEditorForCaImpl<CaType>>
 )) {
-  // @ts-ignore
   return renderEditorForCaImpl(...args) ;
 }
 const renderEditorForCaImpl = (
-  function<CaType extends SupportedCaType>(c: SupportedCaDesc<CaType> & CaBaseOps.RenderPropsImpl<(typeof main)[CaType]> ) {
+  function<CaType extends SupportedCaType>(c: SupportedCaDesc<CaType> ) {
     const PrimaryDisplayComp = (
       main[c.type satisfies CaType]
       .render
