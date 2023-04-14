@@ -27,12 +27,14 @@ export const main = (
     renderEditorForItem ,
   }] : [EntryInstCtx,] ) => {
     const R : MainOps["render"] = (...[
-      { spec, } ,
+      { 
+        spec: pathData, 
+      } ,
     ] ) => {
       // TODO
       return (
         <path 
-        d={spec }
+        d={pathData }
         fill="blue"
         />
       ) ;
