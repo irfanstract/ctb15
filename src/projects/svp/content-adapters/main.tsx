@@ -87,7 +87,18 @@ namespace CaBaseOps {
   
   export type RenderPropsImpl<This extends CaBaseOps> = (
     util.Constructor.Tv<This["ContentProps"]>["newValue"]
-  ) ;
+  ) extends (
+    infer Props extends {}
+  ) ? (
+    
+    Props
+    & {
+      onChange?: (
+        util.React.Dispatch<{ newValue: Props ; }>
+      ) ;
+    }
+
+  ) : never ;
   export type RenderCompImpl<This extends CaBaseOps> = (
     { (props: CaBaseOps.RenderPropsImpl<This>): util.React.ReactElement ; }
   ) ;
