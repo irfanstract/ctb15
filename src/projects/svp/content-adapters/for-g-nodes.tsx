@@ -89,7 +89,7 @@ export const main = (
     return (
       ({
         render: R ,
-        Props: (
+        ContentProps: (
           util.Constructor.getNonFunctionalInstance()
         ) ,
       }) satisfies MainOps
@@ -97,7 +97,7 @@ export const main = (
   }
 ) ;
 interface MainOps extends CaBaseOps {
-  Props: (
+  ContentProps: (
     util.Constructor.AtContravar<XAppProps>
   ) ;
 };
