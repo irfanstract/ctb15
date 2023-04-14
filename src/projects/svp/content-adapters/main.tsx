@@ -42,7 +42,7 @@ export function renderEditorForCa<CaType extends SupportedCaType>(...args: (
   return renderEditorForCaImpl(...args) ;
 }
 const renderEditorForCaImpl = (
-  function<CaType extends SupportedCaType>(c: SupportedCaDesc<CaType> ) {
+  function<CaType extends SupportedCaType>(c: SupportedCaDesc<CaType> & CaBaseOps.RenderPropsImpl<(typeof main)[CaType]> ) {
     const PrimaryDisplayComp = (
       main[c.type satisfies CaType]
       .render
