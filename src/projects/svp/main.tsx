@@ -14,7 +14,7 @@ import type contentAdapters from "src/projects/svp/content-adapters/main";
 
 import * as contentHandling from "src/projects/svp/content-adapters/main";
 
-const content: contentHandling.SupportedCaDesc = {
+const content0: contentHandling.SupportedCaDesc = {
   type: "g" ,
   transform: (
     JSON.stringify({
@@ -35,6 +35,9 @@ const content: contentHandling.SupportedCaDesc = {
 
 export default (
   util.React.forwardRef<{}, {}>(function SvpRender() {
+    const [content, setContent] = (
+      util.React.useState<contentHandling.SupportedCaDesc>(content0)
+    ) ;
     const {
       hoverPos ,
       setHoverPos ,
@@ -56,7 +59,15 @@ export default (
       }}
       children={( 
         <g>
-        { contentHandling.renderEditorForCa(content ) }
+        { contentHandling.renderEditorForCa({
+          ...content ,
+
+          onChange: ({ newValue, }) => {
+            // @ts-ignore
+            setContent(newValue) ;
+          } ,
+
+        } ) }
         { 0 && (
         <HoverMnComp 
         onPointerLeave={() => {
