@@ -42,15 +42,37 @@ export function renderEditorForCa<CaType extends SupportedCaType>(...args: (
   return renderEditorForCaImpl(...args) ;
 }
 const renderEditorForCaImpl = (
-  function<CaType extends SupportedCaType>(c: SupportedCaDesc<CaType> ) {
+  function<CaType extends SupportedCaType>(c: SupportedCaDesc<CaType> & (
+    & {
+      onChange?: (
+        util.React.Dispatch<{ newValue: SupportedCaDesc<CaType> ; }>
+      ) ;
+    }
+  ) ) {
+    const {
+      type: cls ,
+    } = c ;
     const PrimaryDisplayComp = (
-      main[c.type satisfies CaType]
+      (main[cls satisfies CaType] || (() => { throw TypeError(`for type '${cls }'`) ; } ) )
       .render
     ) ;
+    const {
+      onChange : propagateChangeEvt = Object ,
+    } = c ;
     const primary = (
       // @ts-ignore
       <PrimaryDisplayComp 
       {...c }
+      {...{
+        onChange: ({ newValue, }) => {
+          propagateChangeEvt({ 
+            newValue: {
+              ...newValue ,
+              type: cls ,
+            }, 
+          }) ;
+        } ,
+      } }
       />
     ) ;
     const mSourceCode = (
