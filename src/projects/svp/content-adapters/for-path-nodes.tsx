@@ -29,6 +29,7 @@ export const main = (
     const R : MainOps["render"] = (...[
       { 
         spec: pathData, 
+        onChange: propagateChangeEvt = Array.of ,
       } ,
     ] ) => {
       // TODO
