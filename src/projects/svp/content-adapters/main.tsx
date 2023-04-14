@@ -39,6 +39,7 @@ export type SupportedCaDescTable = (
 export function renderEditorForCa<CaType extends SupportedCaType>(...args: (
   Parameters<typeof renderEditorForCaImpl<CaType>>
 )) {
+  // @ts-ignore
   return renderEditorForCaImpl(...args) ;
 }
 const renderEditorForCaImpl = (
