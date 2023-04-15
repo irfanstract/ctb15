@@ -10,6 +10,7 @@ import JFrameUndoRedoBtnDemoComp from 'src/projects/jframes/ContentUndoRedoDemoA
 import EmAsyncifyExample from "src/projects/em_asyncify_example.out.wasm?init" ;
 import emAsyncifyExampleAgain from "src/projects/em_asyncify_example1" ; //
 import SvpComp from 'src/projects/svp/main';
+import InteropSvgTestpane from 'src/projects/svp/data-model/interop-svg-testpane';
 //
 import './App.css'
 import { DpfhButton, } from 'src/projects/ffp/main' 
@@ -32,6 +33,7 @@ function App() {
         <button onClick={() => { setCount((count) => count + 1) ; }}>
           count is {count}
         </button>
+        <InteropSvgTestpane />
         <SvpComp /> 
         <ToDoListDemoComponent />
         <IJFrameDemo />
