@@ -142,6 +142,47 @@ export const describePathCmdByRawTokens = (
               } ;
           }
         }
+      case "A" :
+      case "a" :
+        /* `(rx ry x-axis-rotation large-arc-flag sweep-flag x y)+` */
+        {
+          const [
+            radiusX = Number.NaN, 
+            radiusY = Number.NaN, 
+            xAxisRotation = Number.NaN, 
+            largerBranchFlag = Number.NaN, 
+            sweepFlag = Number.NaN, 
+            destX = Number.NaN, 
+            destY = Number.NaN, 
+          ] = (
+            desc.slice(1)
+            .map(v => +v )
+          ) ;
+          switch (type) {
+            case "A" :
+            case "a" :
+              return { 
+                type: type, 
+                target: (
+                  new DOMPoint(...[
+                    destX, 
+                    destY,
+                  ])
+                ) , 
+                radius: (
+                  new DOMPoint(...[
+                    radiusX, 
+                    radiusY,
+                  ])
+                ) ,
+                xAxisRotation: (
+                  xAxisRotation
+                ) ,
+                larger: !!largerBranchFlag ,
+                sweep: !!sweepFlag ,
+              } ;
+          }
+        }
     }
     throw TypeError((
       JSON.stringify((
