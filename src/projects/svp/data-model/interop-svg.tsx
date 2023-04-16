@@ -212,10 +212,12 @@ export const parsePathDStringPre = (() => {
 
               /** 
                * if no explicit Cm,
-               * return 
+               * let `impliedCm` be 
                * same Cm 
                * or instead, for "M" or "m",
                * corresponding "L" or "l"
+               * and
+               * insert `impliedCm` and retry
                * .
                */
               if (util.isNumericString(cm) ) {
