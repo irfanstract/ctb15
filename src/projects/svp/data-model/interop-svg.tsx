@@ -21,7 +21,7 @@ import * as util from "src/projects/svp/util" ;
  * for that, use this constant in place of regular `{ x, y, }`.
  * 
  */
-export const POSITION_INFERRED = Symbol() ;
+export const POSITION_INFERRED = "auto" ;
 
 /** 
  * [https://www.w3.org/TR/SVG2/paths.html#PathData].
