@@ -82,30 +82,32 @@ export const describePathCmdByRawTokens = (
       case "s" :
       case "Q" :
       case "q" :
-        const [
-          ctrlX = Number.NaN, 
-          ctrlY = Number.NaN, 
-          destX = Number.NaN, 
-          destY = Number.NaN, 
-        ] = (
-          desc.slice(1)
-          .map(v => +v )
-        ) ;
-        switch (type) {
-          case "S" :
-          case "s" :
-            return { 
-              type: type, 
-              target: new DOMPoint(destX, destY) , 
-              ctrlPoints: [POSITION_INFERRED, new DOMPoint(ctrlX, ctrlY) , ] ,
-            } ;
-          case "Q" :
-          case "q" :
-            return { 
-              type: type, 
-              target: new DOMPoint(destX, destY) , 
-              ctrlPoints: [new DOMPoint(ctrlX, ctrlY) , ] ,
-            } ;
+        {
+          const [
+            ctrlX = Number.NaN, 
+            ctrlY = Number.NaN, 
+            destX = Number.NaN, 
+            destY = Number.NaN, 
+          ] = (
+            desc.slice(1)
+            .map(v => +v )
+          ) ;
+          switch (type) {
+            case "S" :
+            case "s" :
+              return { 
+                type: type, 
+                target: new DOMPoint(destX, destY) , 
+                ctrlPoints: [POSITION_INFERRED, new DOMPoint(ctrlX, ctrlY) , ] ,
+              } ;
+            case "Q" :
+            case "q" :
+              return { 
+                type: type, 
+                target: new DOMPoint(destX, destY) , 
+                ctrlPoints: [new DOMPoint(ctrlX, ctrlY) , ] ,
+              } ;
+          }
         }
     }
     throw TypeError((
