@@ -14,6 +14,16 @@ import * as util from "src/projects/svp/util" ;
 
 
 /** 
+ * the position is inferred, rather than explicitly specified.
+ * 
+ * [the W3's spec for `<path>` `d`](https://www.w3.org/TR/SVG2/paths.html#PathData)
+ * allows nodes each to have "symmetric handle".
+ * for that, use this constant in place of regular `{ x, y, }`.
+ * 
+ */
+export const POSITION_INFERRED = Symbol() ;
+
+/** 
  * [https://www.w3.org/TR/SVG2/paths.html#PathData].
  * 
  * @see we intentionally avoid making this API depend on DOM since DOM doesn't exist in SSR.
