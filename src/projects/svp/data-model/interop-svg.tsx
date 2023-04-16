@@ -40,7 +40,7 @@ export const parsePathDString: {
           | { type: "C" | "c", target: DOMPointReadOnly, ctrlPoints: [DOMPointReadOnly, DOMPointReadOnly], }
           | { type: "S" | "s", target: DOMPointReadOnly, ctrlPoints: [typeof POSITION_INFERRED, DOMPointReadOnly], }
         )
-        | { type: "A" | "a", target: DOMPointReadOnly, radius: DOMPointReadOnly, xAxisRotation: SVGAngle, larger: boolean, sweep: boolean, }
+        | { type: "A" | "a", target: DOMPointReadOnly, radius: DOMPointReadOnly, xAxisRotation: number, larger: boolean, sweep: boolean, }
       )
       | "z"
     )[]
@@ -52,62 +52,144 @@ export const parsePathDString: {
     ) ;
     return (
       ct1
-      .map((desc): ParsedPathCmdInfo => {
-        const type = desc[0] ;
-        switch (type) {
-          case "z" :
-            return "z" ;
-          case "H" :
-          case "h" :
-          case "V" :
-          case "v" :
-            return { type: type, target: +(desc[1] ?? "") , } ;
-          case "M" :
-          case "m" :
-          case "L" :
-          case "l" :
-            return { type: type, target: new DOMPoint(...desc.slice(1).map(v => +v ) ) , } ;
-          case "T" :
-          case "t" :
-            return { type: type, target: new DOMPoint(...desc.slice(1).map(v => +v ) ) , ctrlPoints: [] , } ;
-          case "S" :
-          case "s" :
-          case "Q" :
-          case "q" :
-            const [
-              ctrlX = Number.NaN, 
-              ctrlY = Number.NaN, 
-              destX = Number.NaN, 
-              destY = Number.NaN, 
-            ] = (
-              desc.slice(1)
-              .map(v => +v )
-            ) ;
-            switch (type) {
-              case "S" :
-              case "s" :
-                return { 
-                  type: type, 
-                  target: new DOMPoint(destX, destY) , 
-                  ctrlPoints: [POSITION_INFERRED, new DOMPoint(ctrlX, ctrlY) , ] ,
-                } ;
-              case "Q" :
-              case "q" :
-                return { 
-                  type: type, 
-                  target: new DOMPoint(destX, destY) , 
-                  ctrlPoints: [new DOMPoint(ctrlX, ctrlY) , ] ,
-                } ;
-            }
-        }
-        throw TypeError((
-          JSON.stringify((
-            (desc satisfies string[] ).join(" ")
-          ))
-        )) ;
-      } )
+      .map((desc): ParsedPathCmdInfo => (
+        describePathCmdByRawTokens(desc)
+      ) )
     ) ;
   }
+) ;
+
+export const describePathCmdByRawTokens = (
+  ((desc: ParsedPathCmdRawTokens): ParsedPathCmdInfo => {
+    const type = desc[0] ;
+    switch (type) {
+      case "z" :
+        return "z" ;
+      case "H" :
+      case "h" :
+      case "V" :
+      case "v" :
+        return { type: type, target: +(desc[1] ?? "") , } ;
+      case "M" :
+      case "m" :
+      case "L" :
+      case "l" :
+        return { type: type, target: new DOMPoint(...desc.slice(1).map(v => +v ) ) , } ;
+      case "T" :
+      case "t" :
+        return { type: type, target: new DOMPoint(...desc.slice(1).map(v => +v ) ) , ctrlPoints: [] , } ;
+      case "S" :
+      case "s" :
+      case "Q" :
+      case "q" :
+        {
+          const [
+            ctrlX = Number.NaN, 
+            ctrlY = Number.NaN, 
+            destX = Number.NaN, 
+            destY = Number.NaN, 
+          ] = (
+            desc.slice(1)
+            .map(v => +v )
+          ) ;
+          switch (type) {
+            case "S" :
+            case "s" :
+              return { 
+                type: type, 
+                target: new DOMPoint(destX, destY) , 
+                ctrlPoints: [POSITION_INFERRED, new DOMPoint(ctrlX, ctrlY) , ] ,
+              } ;
+            case "Q" :
+            case "q" :
+              return { 
+                type: type, 
+                target: new DOMPoint(destX, destY) , 
+                ctrlPoints: [new DOMPoint(ctrlX, ctrlY) , ] ,
+              } ;
+          }
+        }
+      case "C" :
+      case "c" :
+        {
+          const [
+            ctrl1X = Number.NaN, 
+            ctrl1Y = Number.NaN, 
+            ctrl2X = Number.NaN, 
+            ctrl2Y = Number.NaN, 
+            destX = Number.NaN, 
+            destY = Number.NaN, 
+          ] = (
+            desc.slice(1)
+            .map(v => +v )
+          ) ;
+          switch (type) {
+            case "C" :
+            case "c" :
+              return { 
+                type: type, 
+                target: new DOMPoint(destX, destY) , 
+                ctrlPoints: [
+                  new DOMPoint(...[
+                    ctrl1X, 
+                    ctrl1Y ,
+                  ]) , 
+                  new DOMPoint(...[
+                    ctrl2X, 
+                    ctrl2Y ,
+                  ]) , 
+                ] ,
+              } ;
+          }
+        }
+      case "A" :
+      case "a" :
+        /* `(rx ry x-axis-rotation large-arc-flag sweep-flag x y)+` */
+        {
+          const [
+            radiusX = Number.NaN, 
+            radiusY = Number.NaN, 
+            xAxisRotation = Number.NaN, 
+            largerBranchFlag = Number.NaN, 
+            sweepFlag = Number.NaN, 
+            destX = Number.NaN, 
+            destY = Number.NaN, 
+          ] = (
+            desc.slice(1)
+            .map(v => +v )
+          ) ;
+          switch (type) {
+            case "A" :
+            case "a" :
+              return { 
+                type: type, 
+                target: (
+                  new DOMPoint(...[
+                    destX, 
+                    destY,
+                  ])
+                ) , 
+                radius: (
+                  new DOMPoint(...[
+                    radiusX, 
+                    radiusY,
+                  ])
+                ) ,
+                xAxisRotation: (
+                  xAxisRotation
+                ) ,
+                larger: !!largerBranchFlag ,
+                sweep: !!sweepFlag ,
+              } ;
+          }
+        }
+    }
+    throw TypeError((
+      JSON.stringify((
+        (desc satisfies string[] ).join(" ")
+      ))
+    )) ;
+  })
 ) ;
 
 type ParsedPathCmdInfo = (
@@ -121,7 +203,7 @@ type Cm = (
   ((Extract<ParsedPathCmdInfo, { type: string ; }>)["type"] | Extract<ParsedPathCmdInfo, string> )
 ) ;
 type ParsedPathCmdRawTokens = (
-  ReturnType<typeof parsePathDStringPre>[number]
+  [Cm, ...string[]]
 ) ;
 /** 
  * like {@link parsePathDString }, but
@@ -167,6 +249,10 @@ export const parsePathDStringPre = (() => {
             case "C" :
             case "c" :
               return 6 ;
+            case "A" :
+            case "a" :
+              /* `(rx ry x-axis-rotation large-arc-flag sweep-flag x y)+` */
+              return 7 ;
           }
           throw TypeError(`cm: ${cm }`) ;
         } )()
@@ -183,7 +269,7 @@ export const parsePathDStringPre = (() => {
   return (
     ((code: string): (
       (
-        | [Cm, ...string[]] 
+        | ParsedPathCmdRawTokens
         // | [`${number}`, string] // the parser above can't trivially be made smart enough
       )[]
     ) => {
