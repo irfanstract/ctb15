@@ -35,6 +35,8 @@ export default (
               { subject: "M 3 , 3 5 5 7 7", } ,
               { subject: "m 3 , 3 Q 5 5 7 7 11 11 8 8 z", } ,
               { subject: "m 3 , 3 q 5 5 7 7 11 11 8 8 h 2 3 z", } ,
+              { subject: "m 3 , 3 C 5 5 7 7 11 11 z", } ,
+              { subject: "m 3 , 3 A 5 5 90 0 0 11 11 A 12 12 45 0 1 5 5 z", } ,
             ]
             .map((c, i) => {
               return (
