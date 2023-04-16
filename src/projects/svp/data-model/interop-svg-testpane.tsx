@@ -25,6 +25,7 @@ export default (
           { (
             [
               { subject: `M 3 3 L 5 5 l 7 7 z`, } ,
+              { subject: `M 3 3 5 5 7 7 z`, } ,
               { subject: `M 3 , 3 L 5 5 z`, } ,
               { subject: `M 3 , 3 5 5 7 7 9 9 L 11 11 z`, } ,
               { subject: `m 3 , 3 5 5 7 7 V 11 T 11 11 z`, } ,
