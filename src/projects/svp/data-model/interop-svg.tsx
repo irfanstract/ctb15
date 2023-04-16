@@ -116,7 +116,7 @@ type ParsedPathCmdInfo = (
 type Cm = (
   ((Extract<ParsedPathCmdInfo, { type: string ; }>)["type"] | Extract<ParsedPathCmdInfo, string> )
 ) ;
-type PathElementRaw = (
+type ParsedPathCmdRawTokens = (
   ReturnType<typeof parsePathDStringPre>[number]
 ) ;
 /** 
@@ -187,7 +187,7 @@ export const parsePathDStringPre = (() => {
         tokenisePathDString(code)
       ) ;
       return (
-        Array.from<PathElementRaw>({
+        Array.from<ParsedPathCmdRawTokens>({
           *[Symbol.iterator]() {
             // TODO
             /** 
