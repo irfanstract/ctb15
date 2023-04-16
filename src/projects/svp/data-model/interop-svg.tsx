@@ -249,6 +249,10 @@ export const parsePathDStringPre = (() => {
             case "C" :
             case "c" :
               return 6 ;
+            case "A" :
+            case "a" :
+              /* `(rx ry x-axis-rotation large-arc-flag sweep-flag x y)+` */
+              return 7 ;
           }
           throw TypeError(`cm: ${cm }`) ;
         } )()
