@@ -52,7 +52,7 @@ export const parsePathDString: {
     ) ;
     return (
       ct1
-      .map((desc): PathElement => {
+      .map((desc): ParsedPathCmdInfo => {
         const type = desc[0] ;
         switch (type) {
           case "z" :
@@ -110,13 +110,17 @@ export const parsePathDString: {
   }
 ) ;
 
-type PathElement = (
+type ParsedPathCmdInfo = (
   ReturnType<typeof parsePathDString>[number]
 ) ;
+namespace ParsedPathCmdInfo { ; } // TS(1205)
+export {
+  ParsedPathCmdInfo ,
+} ;
 type Cm = (
-  ((Extract<PathElement, { type: string ; }>)["type"] | Extract<PathElement, string> )
+  ((Extract<ParsedPathCmdInfo, { type: string ; }>)["type"] | Extract<ParsedPathCmdInfo, string> )
 ) ;
-type PathElementRaw = (
+type ParsedPathCmdRawTokens = (
   ReturnType<typeof parsePathDStringPre>[number]
 ) ;
 /** 
@@ -187,7 +191,7 @@ export const parsePathDStringPre = (() => {
         tokenisePathDString(code)
       ) ;
       return (
-        Array.from<PathElementRaw>({
+        Array.from<ParsedPathCmdRawTokens>({
           *[Symbol.iterator]() {
             // TODO
             /** 
@@ -212,10 +216,12 @@ export const parsePathDStringPre = (() => {
 
               /** 
                * if no explicit Cm,
-               * return 
+               * let `impliedCm` be 
                * same Cm 
                * or instead, for "M" or "m",
                * corresponding "L" or "l"
+               * and
+               * insert `impliedCm` and retry
                * .
                */
               if (util.isNumericString(cm) ) {
