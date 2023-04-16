@@ -201,16 +201,26 @@ export const parsePathDStringPre = (() => {
               }
 
               /** 
-               * numeric coord value without preceding alphabetic cmd
-               * shall be treated as "lineto" whose relativity depends on the preceding cmd.
-               * alphabetic cmd(s)
-               * shall be treated as-such.
+               * if no explicit Cm,
+               * return 
+               * same Cm 
+               * or instead, for "M" or "m",
+               * corresponding "L" or "l"
+               * .
                */
               if (util.isNumericString(cm) ) {
                 const impliedCm = (
-                  (
-                    lastCmd.match(/^[a-y]$/g ) ? "l" : "L"
-                  ) satisfies Cm
+                  ((): Cm => {
+                    if (lastCmd === "z") return "L" ; // TODO
+                    if (lastCmd.match(/^[Mm]$/g) ) {
+                      return (
+                        (
+                          lastCmd.match(/^[a-y]$/g ) ? "l" : "L"
+                        ) satisfies Cm
+                      ) ;
+                    }
+                    return lastCmd ;
+                  } )()
                 ) ;
                 
                 remainingTokens = [impliedCm satisfies Cm, ...remainingTokens ] ;
