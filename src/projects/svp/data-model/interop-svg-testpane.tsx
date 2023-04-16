@@ -25,9 +25,16 @@ export default (
           { (
             [
               { subject: `M 3 3 L 5 5 l 7 7 z`, } ,
+              { subject: `M 3 3 5 5 7 7 z`, } ,
+              { subject: `m 3 3 5 5 7 7 z`, } ,
               { subject: `M 3 , 3 L 5 5 z`, } ,
               { subject: `M 3 , 3 5 5 7 7 9 9 L 11 11 z`, } ,
               { subject: `m 3 , 3 5 5 7 7 V 11 T 11 11 z`, } ,
+              { subject: `m 3 , 3 S 5 5 7 7 V 11 z`, } ,
+              { subject: "m 3 , 3 5 5 7 7", } ,
+              { subject: "M 3 , 3 5 5 7 7", } ,
+              { subject: "m 3 , 3 Q 5 5 7 7 11 11 8 8 z", } ,
+              { subject: "m 3 , 3 q 5 5 7 7 11 11 8 8 h 2 3 z", } ,
             ]
             .map((c, i) => {
               return (
