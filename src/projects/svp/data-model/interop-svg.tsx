@@ -52,7 +52,7 @@ export const parsePathDString: {
     ) ;
     return (
       ct1
-      .map((desc): PathElement => {
+      .map((desc): ParsedPathCmdInfo => {
         const type = desc[0] ;
         switch (type) {
           case "z" :
@@ -110,11 +110,11 @@ export const parsePathDString: {
   }
 ) ;
 
-type PathElement = (
+type ParsedPathCmdInfo = (
   ReturnType<typeof parsePathDString>[number]
 ) ;
 type Cm = (
-  ((Extract<PathElement, { type: string ; }>)["type"] | Extract<PathElement, string> )
+  ((Extract<ParsedPathCmdInfo, { type: string ; }>)["type"] | Extract<ParsedPathCmdInfo, string> )
 ) ;
 type PathElementRaw = (
   ReturnType<typeof parsePathDStringPre>[number]
