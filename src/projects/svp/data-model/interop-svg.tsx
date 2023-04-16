@@ -40,7 +40,7 @@ export const parsePathDString: {
           | { type: "C" | "c", target: DOMPointReadOnly, ctrlPoints: [DOMPointReadOnly, DOMPointReadOnly], }
           | { type: "S" | "s", target: DOMPointReadOnly, ctrlPoints: [typeof POSITION_INFERRED, DOMPointReadOnly], }
         )
-        | { type: "A" | "a", target: DOMPointReadOnly, radius: DOMPointReadOnly, xAxisRotation: SVGAngle, larger: boolean, sweep: boolean, }
+        | { type: "A" | "a", target: DOMPointReadOnly, radius: DOMPointReadOnly, xAxisRotation: number, larger: boolean, sweep: boolean, }
       )
       | "z"
     )[]
