@@ -38,7 +38,7 @@ export const parsePathDString: {
           | { type: "T" | "t", target: DOMPointReadOnly, ctrlPoints: [], }
           | { type: "Q" | "q", target: DOMPointReadOnly, ctrlPoints: [DOMPointReadOnly,], }
           | { type: "C" | "c", target: DOMPointReadOnly, ctrlPoints: [DOMPointReadOnly, DOMPointReadOnly], }
-          | { type: "S" | "s", target: DOMPointReadOnly, ctrlPoints: [true, DOMPointReadOnly], }
+          | { type: "S" | "s", target: DOMPointReadOnly, ctrlPoints: [typeof POSITION_INFERRED, DOMPointReadOnly], }
         )
         | { type: "A" | "a", target: DOMPointReadOnly, radius: DOMPointReadOnly, xAxisRotation: SVGAngle, larger: boolean, sweep: boolean, }
       )
@@ -89,7 +89,7 @@ export const parsePathDString: {
                 return { 
                   type: type, 
                   target: new DOMPoint(destX, destY) , 
-                  ctrlPoints: [true, new DOMPoint(ctrlX, ctrlY) , ] ,
+                  ctrlPoints: [POSITION_INFERRED, new DOMPoint(ctrlX, ctrlY) , ] ,
                 } ;
               case "Q" :
               case "q" :
