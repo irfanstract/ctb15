@@ -113,6 +113,10 @@ export const parsePathDString: {
 type ParsedPathCmdInfo = (
   ReturnType<typeof parsePathDString>[number]
 ) ;
+namespace ParsedPathCmdInfo { ; } // TS(1205)
+export {
+  ParsedPathCmdInfo ,
+} ;
 type Cm = (
   ((Extract<ParsedPathCmdInfo, { type: string ; }>)["type"] | Extract<ParsedPathCmdInfo, string> )
 ) ;
