@@ -14,6 +14,16 @@ import * as util from "src/projects/svp/util" ;
 
 
 /** 
+ * the position is inferred, rather than explicitly specified.
+ * 
+ * [the W3's spec for `<path>` `d`](https://www.w3.org/TR/SVG2/paths.html#PathData)
+ * allows nodes each to have "symmetric handle".
+ * for that, use this constant in place of regular `{ x, y, }`.
+ * 
+ */
+export const POSITION_INFERRED = "auto" ;
+
+/** 
  * [https://www.w3.org/TR/SVG2/paths.html#PathData].
  * 
  * @see we intentionally avoid making this API depend on DOM since DOM doesn't exist in SSR.
@@ -28,7 +38,7 @@ export const parsePathDString: {
           | { type: "T" | "t", target: DOMPointReadOnly, ctrlPoints: [], }
           | { type: "Q" | "q", target: DOMPointReadOnly, ctrlPoints: [DOMPointReadOnly,], }
           | { type: "C" | "c", target: DOMPointReadOnly, ctrlPoints: [DOMPointReadOnly, DOMPointReadOnly], }
-          | { type: "S" | "s", target: DOMPointReadOnly, ctrlPoints: [true, DOMPointReadOnly], }
+          | { type: "S" | "s", target: DOMPointReadOnly, ctrlPoints: [typeof POSITION_INFERRED, DOMPointReadOnly], }
         )
         | { type: "A" | "a", target: DOMPointReadOnly, radius: DOMPointReadOnly, xAxisRotation: SVGAngle, larger: boolean, sweep: boolean, }
       )
@@ -79,7 +89,7 @@ export const parsePathDString: {
                 return { 
                   type: type, 
                   target: new DOMPoint(destX, destY) , 
-                  ctrlPoints: [true, new DOMPoint(ctrlX, ctrlY) , ] ,
+                  ctrlPoints: [POSITION_INFERRED, new DOMPoint(ctrlX, ctrlY) , ] ,
                 } ;
               case "Q" :
               case "q" :
@@ -201,16 +211,26 @@ export const parsePathDStringPre = (() => {
               }
 
               /** 
-               * numeric coord value without preceding alphabetic cmd
-               * shall be treated as "lineto" whose relativity depends on the preceding cmd.
-               * alphabetic cmd(s)
-               * shall be treated as-such.
+               * if no explicit Cm,
+               * return 
+               * same Cm 
+               * or instead, for "M" or "m",
+               * corresponding "L" or "l"
+               * .
                */
               if (util.isNumericString(cm) ) {
                 const impliedCm = (
-                  (
-                    lastCmd.match(/^[a-y]$/g ) ? "l" : "L"
-                  ) satisfies Cm
+                  ((): Cm => {
+                    if (lastCmd === "z") return "L" ; // TODO
+                    if (lastCmd.match(/^[Mm]$/g) ) {
+                      return (
+                        (
+                          lastCmd.match(/^[a-y]$/g ) ? "l" : "L"
+                        ) satisfies Cm
+                      ) ;
+                    }
+                    return lastCmd ;
+                  } )()
                 ) ;
                 
                 remainingTokens = [impliedCm satisfies Cm, ...remainingTokens ] ;
