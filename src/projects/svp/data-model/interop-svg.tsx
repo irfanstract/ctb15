@@ -52,62 +52,68 @@ export const parsePathDString: {
     ) ;
     return (
       ct1
-      .map((desc): ParsedPathCmdInfo => {
-        const type = desc[0] ;
-        switch (type) {
-          case "z" :
-            return "z" ;
-          case "H" :
-          case "h" :
-          case "V" :
-          case "v" :
-            return { type: type, target: +(desc[1] ?? "") , } ;
-          case "M" :
-          case "m" :
-          case "L" :
-          case "l" :
-            return { type: type, target: new DOMPoint(...desc.slice(1).map(v => +v ) ) , } ;
-          case "T" :
-          case "t" :
-            return { type: type, target: new DOMPoint(...desc.slice(1).map(v => +v ) ) , ctrlPoints: [] , } ;
-          case "S" :
-          case "s" :
-          case "Q" :
-          case "q" :
-            const [
-              ctrlX = Number.NaN, 
-              ctrlY = Number.NaN, 
-              destX = Number.NaN, 
-              destY = Number.NaN, 
-            ] = (
-              desc.slice(1)
-              .map(v => +v )
-            ) ;
-            switch (type) {
-              case "S" :
-              case "s" :
-                return { 
-                  type: type, 
-                  target: new DOMPoint(destX, destY) , 
-                  ctrlPoints: [POSITION_INFERRED, new DOMPoint(ctrlX, ctrlY) , ] ,
-                } ;
-              case "Q" :
-              case "q" :
-                return { 
-                  type: type, 
-                  target: new DOMPoint(destX, destY) , 
-                  ctrlPoints: [new DOMPoint(ctrlX, ctrlY) , ] ,
-                } ;
-            }
-        }
-        throw TypeError((
-          JSON.stringify((
-            (desc satisfies string[] ).join(" ")
-          ))
-        )) ;
-      } )
+      .map((desc): ParsedPathCmdInfo => (
+        describePathCmdByRawTokens(desc)
+      ) )
     ) ;
   }
+) ;
+
+export const describePathCmdByRawTokens = (
+  ((desc: ParsedPathCmdRawTokens): ParsedPathCmdInfo => {
+    const type = desc[0] ;
+    switch (type) {
+      case "z" :
+        return "z" ;
+      case "H" :
+      case "h" :
+      case "V" :
+      case "v" :
+        return { type: type, target: +(desc[1] ?? "") , } ;
+      case "M" :
+      case "m" :
+      case "L" :
+      case "l" :
+        return { type: type, target: new DOMPoint(...desc.slice(1).map(v => +v ) ) , } ;
+      case "T" :
+      case "t" :
+        return { type: type, target: new DOMPoint(...desc.slice(1).map(v => +v ) ) , ctrlPoints: [] , } ;
+      case "S" :
+      case "s" :
+      case "Q" :
+      case "q" :
+        const [
+          ctrlX = Number.NaN, 
+          ctrlY = Number.NaN, 
+          destX = Number.NaN, 
+          destY = Number.NaN, 
+        ] = (
+          desc.slice(1)
+          .map(v => +v )
+        ) ;
+        switch (type) {
+          case "S" :
+          case "s" :
+            return { 
+              type: type, 
+              target: new DOMPoint(destX, destY) , 
+              ctrlPoints: [POSITION_INFERRED, new DOMPoint(ctrlX, ctrlY) , ] ,
+            } ;
+          case "Q" :
+          case "q" :
+            return { 
+              type: type, 
+              target: new DOMPoint(destX, destY) , 
+              ctrlPoints: [new DOMPoint(ctrlX, ctrlY) , ] ,
+            } ;
+        }
+    }
+    throw TypeError((
+      JSON.stringify((
+        (desc satisfies string[] ).join(" ")
+      ))
+    )) ;
+  })
 ) ;
 
 type ParsedPathCmdInfo = (
