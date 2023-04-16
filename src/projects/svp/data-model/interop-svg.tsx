@@ -109,6 +109,39 @@ export const describePathCmdByRawTokens = (
               } ;
           }
         }
+      case "C" :
+      case "c" :
+        {
+          const [
+            ctrl1X = Number.NaN, 
+            ctrl1Y = Number.NaN, 
+            ctrl2X = Number.NaN, 
+            ctrl2Y = Number.NaN, 
+            destX = Number.NaN, 
+            destY = Number.NaN, 
+          ] = (
+            desc.slice(1)
+            .map(v => +v )
+          ) ;
+          switch (type) {
+            case "C" :
+            case "c" :
+              return { 
+                type: type, 
+                target: new DOMPoint(destX, destY) , 
+                ctrlPoints: [
+                  new DOMPoint(...[
+                    ctrl1X, 
+                    ctrl1Y ,
+                  ]) , 
+                  new DOMPoint(...[
+                    ctrl2X, 
+                    ctrl2Y ,
+                  ]) , 
+                ] ,
+              } ;
+          }
+        }
     }
     throw TypeError((
       JSON.stringify((
