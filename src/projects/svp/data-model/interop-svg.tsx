@@ -121,7 +121,7 @@ type Cm = (
   ((Extract<ParsedPathCmdInfo, { type: string ; }>)["type"] | Extract<ParsedPathCmdInfo, string> )
 ) ;
 type ParsedPathCmdRawTokens = (
-  ReturnType<typeof parsePathDStringPre>[number]
+  [Cm, ...string[]]
 ) ;
 /** 
  * like {@link parsePathDString }, but
@@ -183,7 +183,7 @@ export const parsePathDStringPre = (() => {
   return (
     ((code: string): (
       (
-        | [Cm, ...string[]] 
+        | ParsedPathCmdRawTokens
         // | [`${number}`, string] // the parser above can't trivially be made smart enough
       )[]
     ) => {
