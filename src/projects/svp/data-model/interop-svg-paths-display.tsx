@@ -362,6 +362,48 @@ import {
   WithLocalCoordSpaceUsageComp as XWithLocalCoordSpaceUsageComp, 
 } from "src/projects/jsx-coord-space/in1";
 
+/** 
+ * the renderer for each main-or-ctrl point in {@link PathDSvEditComp }.
+ * 
+ */
+const PsvCpnCtrlPointComp = (
+  (({ 
+    pos: p, 
+    type: ctrlType, 
+    startDrag ,
+  }) => {
+    ;
+    const toolTipText = (
+      [
+        `${ctrlType } point` ,
+        `{ x: ${p.x }, y: ${p.y }, }` ,
+      ].join("; ")
+    ) ;
+    ;
+    return (
+      <g
+      className={`${psvcCss.PCTRLPOINT } ${ctrlType === "ctrl" && psvcCss.PCTRLPOINT_IS_CTRL } ${startDrag && psvcCss.PCTRLPOINT_IS_MUTABLE } ` }
+      tabIndex={0}
+      >
+        <title 
+        children={toolTipText }
+        />
+        <rect 
+        className={`${psvcCss.PCTRLPOINT_PART_DOT } ` }
+        x={p.x }
+        y={p.y }
+        width={0.3}
+        height={0.3}
+        />
+      </g>
+    ) ;
+  }) satisfies {
+    (...args: [
+      props: ReturnType<typeof analysePathSegmentListCtrlPointsCoords>[number]["pointsList"][number] ,
+    ]) : util.React.ReactElement ;
+  }
+) ;
+
 
 
 
