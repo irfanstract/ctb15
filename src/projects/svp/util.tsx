@@ -7,6 +7,7 @@ import * as util from "src/utility-functions/all" ;
 
 
 export * from "src/utility-functions/all" ;
+export * from "src/projects/typemash/recordtypepicking" ;
 export { default as Constructor, } from "src/projects/typemash/opaque-type-constructor/fcv" ;
 
 
