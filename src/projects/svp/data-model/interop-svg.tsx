@@ -13,6 +13,17 @@ import * as util from "src/projects/svp/util" ;
 
 
 
+export const getTranslatedPoint1: {
+  (p0: DOMPointReadOnly, p1: DOMPointReadOnly, ): DOMPointReadOnly ;
+} = (
+  (p0, p1,) => (
+    DOMPointReadOnly.fromPoint({
+      x: p0.x + p1.x ,
+      y: p0.y + p1.y ,
+    })
+  )
+) ;
+
 /** 
  * the position is inferred, rather than explicitly specified.
  * 
