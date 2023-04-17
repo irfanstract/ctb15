@@ -57,6 +57,9 @@ export const PathDSvEditComp = (
         } }
         />
         <g>
+          <XWithLocalCoordSpaceUsageComp>
+          { ({ translateClientPos, }) => (
+          <g>
           { (
             analysePathSegmentListCtrlPointsCoords(codeParsedNormalised)
             .map(({
@@ -109,6 +112,9 @@ export const PathDSvEditComp = (
               ) ;
             } )
           ) }
+          </g>
+          ) }
+          </XWithLocalCoordSpaceUsageComp>
         </g>
       </g>
     ) ;
