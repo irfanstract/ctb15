@@ -57,8 +57,19 @@ export const PathDSvEditComp = (
         } }
         />
         <g>
+        { (() => {
+        ;
+        const cpnCtrlPointsInfo = (
+          analysePathSegmentListCtrlPointsCoords(codeParsedNormalised)
+        ) ;
+        return (
+          <XWithLocalCoordSpaceUsageComp>
+          { ({ translateClientPos, }) => {
+          ;
+          return (
+          <g>
           { (
-            analysePathSegmentListCtrlPointsCoords(codeParsedNormalised)
+            cpnCtrlPointsInfo
             .map(({
               id: arcId, 
 
@@ -74,10 +85,9 @@ export const PathDSvEditComp = (
             }) => {
               const g = (
                 (() => {
-                  const pointsListPlot = (
-                    pointsList
-                    .map(({ pos: p, type: ctrlType, }, i) => (
-                      <Kk key={i}>
+                  const renderPointByDesc = (
+                    (({ pos: p, type: ctrlType, }) => {
+                      return (
                         <rect 
                         x={p.x }
                         y={p.y }
@@ -85,6 +95,16 @@ export const PathDSvEditComp = (
                         height={lineStylingCssProps.strokeWidth ?? 0.3}
                         {...(ctrlType === "ctrl" ? { stroke: `rgb(128,0,128)`, } : {} )}
                         />
+                      ) ;
+                    }) satisfies {
+                      (desc: (typeof pointsList)[number]): util.React.ReactElement ;
+                    }
+                  ) ;
+                  const pointsListPlot = (
+                    pointsList
+                    .map((pointDesc, i) => (
+                      <Kk key={i}>
+                        { renderPointByDesc(pointDesc) }
                       </Kk>
                     ) )
                   ) ;
@@ -102,6 +122,12 @@ export const PathDSvEditComp = (
               ) ;
             } )
           ) }
+          </g>
+          ) ;
+          } }
+          </XWithLocalCoordSpaceUsageComp>
+        ) ;
+        })() }
         </g>
       </g>
     ) ;
@@ -135,7 +161,22 @@ const usePsvCodeParse = (
   }
 ) ;
 const analysePathSegmentListCtrlPointsCoords = (
-  (codeParsedNormalised: ReturnType<typeof usePsvCodeParse>["codeParsedNormalised"]) => {
+  (codeParsedNormalised: ReturnType<typeof main.toAbsoluteCoordedPathData>, ...[
+    apsOptions = {} ,
+  ] : [
+    options ?: (  
+      & {
+        onModelEdit?: (
+          util.React.Dispatch<{
+            updatedPathSegList: ReturnType<typeof main.toAbsoluteCoordedPathData> ,
+          }>
+        ) ,
+      }
+    ) ,
+  ]) => {
+    const {
+      onModelEdit = false ,
+    } = apsOptions ;
     const {
       shallSegmentsDuplicateStartPoints = false ,
     } = ((): (
@@ -260,7 +301,20 @@ const analysePathSegmentListCtrlPointsCoords = (
               Array.from({
 
                 *[Symbol.iterator](): (
-                  Generator<{ type: "main" | "ctrl", pos: DOMPointReadOnly, }>
+                  Generator<{ 
+                    type: "main" | "ctrl",
+                    pos: DOMPointReadOnly,
+
+                    startDrag?: () => {
+                      moveTo: (
+                        util.React.Dispatch<(
+                          | { newAbsolutePos: DOMPointReadOnly ; }
+                        )>
+                      ) ;
+                      close(): void ;
+                    } ,
+                    
+                  }>
                 ) {
                   if (shallSegmentsDuplicateStartPoints) {
                     if (type === "M") {
@@ -296,6 +350,15 @@ const analysePathSegmentListCtrlPointsCoords = (
     ) ;
   }
 ) ;
+/** 
+ * usage must make its `children` a function rather than regular return-value ;
+ * the dispatch of the function 
+ * will receive a callback like `translateClientPos` developers expected for
+ * 
+ */
+import { 
+  WithLocalCoordSpaceUsageComp as XWithLocalCoordSpaceUsageComp, 
+} from "src/projects/jsx-coord-space/in1";
 
 
 
