@@ -15,6 +15,51 @@
 
 
 
+.PCTRLPOINT {
+  --fill: black ;
+}
+.PCTRLPOINT_PART_DOT {
+  stroke: var(--fill);
+  fill  : var(--fill);
+  transition: all 0.25s ease-out;
+}
+
+
+.PCTRLPOINT:hover, 
+#------e  { 
+  cursor: help;
+}
+.PCTRLPOINT_IS_MUTABLE:hover, 
+#------e  { 
+  cursor: move;
+}
+
+
+.PCTRLPOINT_IS_CTRL,
+.PCTRLPOINT:hover, 
+#------e  {
+  --fill: rgb(128,0,128) ;
+}
+.PCTRLPOINT:focus-within, 
+#------e {
+  --fill: rgb(128,96,255) ;
+}
+.PCTRLPOINT_IS_MUTABLE:focus-within , 
+#------e  {
+  --fill: rgb(128,160,255) ; 
+}
+.PCTRLPOINT_IS_MUTABLE:hover, 
+#------e  {
+  --fill: rgb(128,224,255) ; 
+}
+
+
+
+
+
+
+
+
 
 
 
