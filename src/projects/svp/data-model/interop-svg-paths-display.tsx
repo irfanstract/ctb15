@@ -132,11 +132,25 @@ export const PathDSvEditComp = (
                           }
                         )}
                         >
-                        <rect 
-                        x={p.x }
-                        y={p.y }
-                        width={lineStylingCssProps.strokeWidth ?? 0.3}
-                        height={lineStylingCssProps.strokeWidth ?? 0.3}
+                        <circle 
+                        cx={p.x }
+                        cy={p.y }
+                        {...(
+                          ((): JSX.IntrinsicElements["circle"] => {
+                            const passiveCaseR = (
+                              lineStylingCssProps.strokeWidth ?? 0.3
+                            ) ;
+                            return (
+                              startDrag ?
+                              {
+                                r : `calc(2 * (${passiveCaseR }) )` , 
+                              }
+                              : {
+                                r : passiveCaseR , 
+                              }
+                            ) ;
+                          })()
+                        )}
                         {...(ctrlType === "ctrl" ? { stroke: `rgb(128,0,128)`, } : {} )}
                         />
                         </g>
