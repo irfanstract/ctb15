@@ -76,6 +76,78 @@ export default (
   }
 ) ;
 
+/** 
+ * the editor, as SVG markup
+ */
+const PathDSvEditComp = (
+  util.React.forwardRef<unknown, (
+    & {
+      value: string ;
+      mainStyle?: util.React.CSSProperties ;
+    }
+  )>((...[
+    { 
+      value: code,
+      mainStyle = {} ,
+    } ,
+  ]) => {
+    const {
+      codeParsed ,
+      codeParsedNormalised ,
+    } = usePsvCodeParse(code) ;
+    const lineStylingCssProps = {
+      
+      stroke: "black" ,
+      strokeWidth: 5 ,
+
+      ...mainStyle ,
+      
+    } satisfies util.React.CSSProperties ;
+    const mainPresentation = (
+      <g
+      style={{
+        ...lineStylingCssProps ,
+        ...mainStyle ,
+      } }
+      >
+        <path 
+        d={code }
+        style={{
+          fill: "gray" ,
+        } }
+        />
+      </g>
+    ) ;
+    ;
+    return (
+      <g>
+        { mainPresentation }
+      </g>
+    ) ;
+  })
+) ;
+const usePsvCodeParse = (
+  (code: string) => {
+    ;
+    const codeParsed = (
+      util.React.useMemo(() => (
+        main.parsePathDString(code)
+      ), [main, code, ] )
+    ) ;
+    const codeParsedNormalised = (
+      util.React.useMemo(() => (
+        main.toAbsoluteCoordedPathData(codeParsed)
+      ), [main, codeParsed, ] )
+    ) ;
+    ;
+    return {
+      code ,
+      codeParsed ,
+      codeParsedNormalised ,
+    } ;
+  }
+) ;
+
 
 
 
