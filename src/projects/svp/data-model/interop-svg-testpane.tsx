@@ -60,6 +60,25 @@ export default (
                         <td>Descs</td>
                         <td><pre>{ JSON.stringify(main.parsePathDString(c.subject ), null, 2 ) }</pre></td>
                       </tr>
+                      <tr>
+                        <td>Graphique</td>
+                        <td>
+                          <svg
+                          viewBox={`0 0 32 32`}
+                          style={{
+                            background: `rgb(255,255,192)` ,
+                            height: `calc(5 * 4em)`,
+                          }}
+                          >
+                            <PathDSvEditComp 
+                            value={c.subject } 
+                            mainStyle={{
+                              strokeWidth: 0.25 ,
+                            }}
+                            />
+                          </svg>
+                        </td>
+                      </tr>
                     </tbody>
                     </table>
                   </li>
