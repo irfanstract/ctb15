@@ -324,6 +324,15 @@ const analysePathSegmentListCtrlPointsCoords = (
     ) ;
   }
 ) ;
+/** 
+ * usage must make its `children` a function rather than regular return-value ;
+ * the dispatch of the function 
+ * will receive a callback like `translateClientPos` developers expected for
+ * 
+ */
+import { 
+  WithLocalCoordSpaceUsageComp as XWithLocalCoordSpaceUsageComp, 
+} from "src/projects/jsx-coord-space/in1";
 
 
 
