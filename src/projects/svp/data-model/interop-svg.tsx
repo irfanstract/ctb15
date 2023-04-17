@@ -64,6 +64,147 @@ export function toAbsoluteCoordedPathData(src: ParsedPathCmdInfo[]): (
     // ParsedPathCmdInfo
   )[]
 ) ;
+export function toAbsoluteCoordedPathData(...[segs0]: Parameters<typeof toAbsoluteCoordedPathData> ): ReturnType<typeof toAbsoluteCoordedPathData> {
+  type SpclPathCmd = ReturnType<typeof toAbsoluteCoordedPathData>[number] ;
+  return (
+    Array.from({
+
+      *[Symbol.iterator](): Generator<SpclPathCmd > {
+        let lastCtxPos : DOMPointReadOnly = (
+          DOMPointReadOnly.fromPoint({ x: 0, y: 0, })
+        ) ;
+        loop1 :
+        for (const e of segs0 ) {
+          switch (typeof e) {
+            
+          case "string" :
+            if (e === "z") return ;
+            throw TypeError(`cmd = ${JSON.stringify(e) }`) ;
+            
+          case "object" :
+            yield ((): SpclPathCmd => {
+              ;
+              const targetPosSpecified1 = (
+                ((): DOMPointReadOnly => {
+                  // TODO
+                  switch (e.type) {
+
+                    case "H" :
+                    case "h" :
+                    case "V" :
+                    case "v" :
+                      {
+                        const { target: targetPosSpecified0, } = e ;
+                        return (
+                          DOMPointReadOnly.fromPoint({ 
+                            [(
+                              {
+                                H: "x" ,
+                                h: "x" ,
+                                V: "y" ,
+                                v: "y" ,
+                              }[e.type]
+                            )]: targetPosSpecified0, 
+                          })
+                        ) ;
+                      }
+
+                    default:
+                      return e.target ;
+
+                  }
+                } )()
+              ) ;
+              /** 
+               * {@link targetPosSpecified1 } resolved asolutely
+               * 
+               */
+              const targetPosActual = (
+                (
+                  isRelativeCoordCmd(e) ?
+                  getTranslatedPoint1(lastCtxPos, targetPosSpecified1)
+                  : targetPosSpecified1
+                ) satisfies DOMPointReadOnly
+              ) ;
+              try {
+                switch (e.type) {
+  
+                  case "A" :
+                  case "a" :
+                    return {
+                      startPos: lastCtxPos ,
+                      originalDesc: e ,
+                      type: "A" ,
+                      larger: e.larger ,
+                      sweep: e.sweep ,
+                      radius: e.radius ,
+                      xAxisRotation: e.xAxisRotation ,
+                      target: targetPosActual ,
+                    }
+  
+                  case "M" :
+                  case "m" :
+                  case "L" :
+                  case "l" :
+                    return {
+                      startPos: lastCtxPos ,
+                      originalDesc: e ,
+                      type: ({
+                        M: "M",
+                        m: "M" ,
+                        L: "L" ,
+                        l: "L" ,
+                      } as const)[e.type] ,
+                      target: targetPosActual ,
+                    }
+
+                  case "H" :
+                  case "h" :
+                  case "V" :
+                  case "v" :
+                    {
+                      const resultingType = (
+                        ({
+                          H: "H",
+                          h: "H" ,
+                          V: "V" ,
+                          v: "V" ,
+                        } as const)[e.type]
+                      ) ;
+                      return {
+                        startPos: lastCtxPos ,
+                        originalDesc: e ,
+                        type: resultingType ,
+                        target: ( 
+                          targetPosActual[(
+                            ({ H: "x", V: "y", } as const)[resultingType]
+                          )] 
+                        ) ,
+                      }
+                    }
+  
+                  // TODO
+                  default :
+                    return {
+                      startPos: lastCtxPos ,
+                      originalDesc: e ,
+                      type: "L" ,
+                      target: targetPosActual ,
+                    } ;
+  
+                }
+              } finally {
+                lastCtxPos = targetPosActual ;
+              }
+            } )() ;
+
+          }
+        }
+      } ,
+      
+    })
+  ) ;
+}
 type IaccSrc = Pick<Extract<ParsedPathCmdInfo, { type: string ; } >, "type"> ;
 export const isRelativeCoordCmd = (
   (e: IaccSrc) => {
