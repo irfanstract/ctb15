@@ -155,8 +155,11 @@ export function toAbsoluteCoordedPathData(...[segs0]: Parameters<typeof toAbsolu
                         L: "L" ,
                         l: "L" ,
                       } as const)[e.type] ,
-                      target: targetPosActual ,
-                    }
+                      target: targetPosActual ,  
+                    } satisfies (
+                      SpclPathCmd
+                      & { type: "M" | "L" ; }
+                    ) ;
 
                   case "H" :
                   case "h" :
@@ -169,7 +172,7 @@ export function toAbsoluteCoordedPathData(...[segs0]: Parameters<typeof toAbsolu
                           h: "H" ,
                           V: "V" ,
                           v: "V" ,
-                        } as const)[e.type]
+                        } satisfies { [k in typeof e.type]: "H" | "V" ; })[e.type]
                       ) ;
                       return {
                         startPos: lastCtxPos ,
@@ -183,6 +186,72 @@ export function toAbsoluteCoordedPathData(...[segs0]: Parameters<typeof toAbsolu
                       }
                     }
   
+                  case "C" :
+                  case "c" :
+                  case "S" :
+                  case "s" :
+                  case "Q" :
+                  case "q" :
+                  case "T" :
+                  case "t" :
+                    {
+                      const refPt = (
+                        (
+                          isRelativeCoordCmd(e) ? 
+                          lastCtxPos : new DOMPointReadOnly()
+                        ) satisfies DOMPointReadOnly
+                      ) ;
+                      switch (e.type) {
+                        case "C" :
+                        case "c" :
+                          return {
+                            startPos: lastCtxPos ,
+                            originalDesc: e ,
+                            type: "C" ,
+                            target: targetPosActual ,  
+                            ctrlPoints: [
+                              getTranslatedPoint1(refPt, e.ctrlPoints[0] ) ,
+                              getTranslatedPoint1(refPt, e.ctrlPoints[1] ) ,
+                            ] ,
+                          } ;
+                        case "S" :
+                        case "s" :
+                          return {
+                            startPos: lastCtxPos ,
+                            originalDesc: e ,
+                            type: "S" ,
+                            target: targetPosActual ,  
+                            ctrlPoints: [
+                              POSITION_INFERRED ,
+                              getTranslatedPoint1(refPt, e.ctrlPoints[1] ) ,
+                            ] ,
+                          } ;
+                        case "Q" :
+                        case "q" :
+                          return {
+                            startPos: lastCtxPos ,
+                            originalDesc: e ,
+                            type: "Q" ,
+                            target: targetPosActual ,  
+                            ctrlPoints: [
+                              getTranslatedPoint1(refPt, e.ctrlPoints[0] ) ,
+                            ] ,
+                          } ;
+                        case "T" :
+                        case "t" :
+                          return {
+                            startPos: lastCtxPos ,
+                            originalDesc: e ,
+                            type: "T" ,
+                            target: targetPosActual ,  
+                            ctrlPoints: [
+                            ] ,
+                          } ;
+                        default :
+                          throw TypeError(`e: ${JSON.stringify(e) }`) ;
+                      }
+                    }
+
                   // TODO
                   default :
                     return {
