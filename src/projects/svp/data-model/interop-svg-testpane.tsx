@@ -58,7 +58,7 @@ export default (
                       </tr>
                       <tr>
                         <td>Descs</td>
-                        <td><code>{ JSON.stringify(main.parsePathDString(c.subject ) ) }</code></td>
+                        <td><pre>{ JSON.stringify(main.parsePathDString(c.subject ), null, 2 ) }</pre></td>
                       </tr>
                     </tbody>
                     </table>
