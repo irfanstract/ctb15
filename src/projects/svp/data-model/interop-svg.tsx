@@ -13,6 +13,57 @@ import * as util from "src/projects/svp/util" ;
 
 
 
+export function toAbsoluteCoordedPathData(src: ParsedPathCmdInfo[]): (
+  (
+    | (
+      & (
+        Extract<ParsedPathCmdInfo, { type: string ; } > extends (infer Ppci extends { type: infer Type extends string ; }) ?
+        (
+          // Desc extends infer Desc1 ?
+          // ((Desc1 & { type: "m" | "l" | "h" | "v" | "t" | "q" | "c" | "s" | "a" ; }))
+          // : never
+          (
+            (Ppci & { type: Exclude<Ppci["type"], "m" | "l" | "h" | "v" | "t" | "q" | "c" | "s" | "a" > ; } ) extends infer AbsolutePpci extends {} ?
+            (
+              // DISTRIBUTIVITY
+              AbsolutePpci extends infer CurrentResultingPpci extends {} ?
+              (
+                CurrentResultingPpci
+                & {
+                  startPos: DOMPointReadOnly ; 
+                }
+                & {
+                  originalDesc: (
+                    /** 
+                     * for usability,
+                     * will need to be narrowed down to the corresponding source type,
+                     * unless it's "M" or "L" which would arise as fallback for unsupported source types
+                     * .
+                     */
+                    { type: "L" ; } extends Partial<CurrentResultingPpci> ?
+                    Ppci :
+                    (
+                      // TODO - choose alts from `Desc` each which `CurrentPpci` extends
+                      /* DISTRIBUTIVITY */
+                      Ppci extends infer CurrentSrcPpci extends {} ?
+                      ([CurrentResultingPpci] extends [CurrentSrcPpci] ? CurrentSrcPpci : never)
+                      : never
+                    )
+                  ) ; 
+                }
+              ) 
+              : never
+            ) 
+            : never 
+          )
+        )
+        : never
+      )
+    )
+    | "z"
+    // ParsedPathCmdInfo
+  )[]
+) ;
 type IaccSrc = Pick<Extract<ParsedPathCmdInfo, { type: string ; } >, "type"> ;
 export const isRelativeCoordCmd = (
   (e: IaccSrc) => {
