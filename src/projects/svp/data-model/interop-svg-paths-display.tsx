@@ -43,6 +43,7 @@ export const PathDSvEditComp = (
       } }
       >
         <path 
+        className={`${psvcCss.PFILL } ` }
         d={code }
         style={{
         } }
