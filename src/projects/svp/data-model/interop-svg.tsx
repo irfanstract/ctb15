@@ -13,6 +13,290 @@ import * as util from "src/projects/svp/util" ;
 
 
 
+export function toAbsoluteCoordedPathData(src: ParsedPathCmdInfo[]): (
+  (
+    | (
+      & (
+        Extract<ParsedPathCmdInfo, { type: string ; } > extends (infer Ppci extends { type: infer Type extends string ; }) ?
+        (
+          // Desc extends infer Desc1 ?
+          // ((Desc1 & { type: "m" | "l" | "h" | "v" | "t" | "q" | "c" | "s" | "a" ; }))
+          // : never
+          (
+            (Ppci & { type: Exclude<Ppci["type"], "m" | "l" | "h" | "v" | "t" | "q" | "c" | "s" | "a" > ; } ) extends infer AbsolutePpci extends {} ?
+            (
+              // DISTRIBUTIVITY
+              AbsolutePpci extends infer CurrentResultingPpci extends {} ?
+              (
+                CurrentResultingPpci
+                & {
+                  startPos: DOMPointReadOnly ; 
+                }
+                & {
+                  originalDesc: (
+                    /** 
+                     * for usability,
+                     * will need to be narrowed down to the corresponding source type,
+                     * unless it's "M" or "L" which would arise as fallback for unsupported source types
+                     * .
+                     */
+                    { type: "L" ; } extends Partial<CurrentResultingPpci> ?
+                    Ppci :
+                    (
+                      // TODO - choose alts from `Desc` each which `CurrentPpci` extends
+                      /* DISTRIBUTIVITY */
+                      Ppci extends infer CurrentSrcPpci extends {} ?
+                      ([CurrentResultingPpci] extends [CurrentSrcPpci] ? CurrentSrcPpci : never)
+                      : never
+                    )
+                  ) ; 
+                }
+              ) 
+              : never
+            ) 
+            : never 
+          )
+        )
+        : never
+      )
+    )
+    | "z"
+    // ParsedPathCmdInfo
+  )[]
+) ;
+export function toAbsoluteCoordedPathData(...[segs0]: Parameters<typeof toAbsoluteCoordedPathData> ): ReturnType<typeof toAbsoluteCoordedPathData> {
+  type SpclPathCmd = ReturnType<typeof toAbsoluteCoordedPathData>[number] ;
+  return (
+    Array.from({
+
+      *[Symbol.iterator](): Generator<SpclPathCmd > {
+        let lastCtxPos : DOMPointReadOnly = (
+          DOMPointReadOnly.fromPoint({ x: 0, y: 0, })
+        ) ;
+        loop1 :
+        for (const e of segs0 ) {
+          switch (typeof e) {
+            
+          case "string" :
+            if (e === "z") return ;
+            throw TypeError(`cmd = ${JSON.stringify(e) }`) ;
+            
+          case "object" :
+            yield ((): SpclPathCmd => {
+              ;
+              const targetPosSpecified1 = (
+                ((): DOMPointReadOnly => {
+                  // TODO
+                  switch (e.type) {
+
+                    case "H" :
+                    case "h" :
+                    case "V" :
+                    case "v" :
+                      {
+                        const { target: targetPosSpecified0, } = e ;
+                        return (
+                          DOMPointReadOnly.fromPoint({ 
+                            [(
+                              {
+                                H: "x" ,
+                                h: "x" ,
+                                V: "y" ,
+                                v: "y" ,
+                              }[e.type]
+                            )]: targetPosSpecified0, 
+                          })
+                        ) ;
+                      }
+
+                    default:
+                      return e.target ;
+
+                  }
+                } )()
+              ) ;
+              /** 
+               * {@link targetPosSpecified1 } resolved asolutely
+               * 
+               */
+              const targetPosActual = (
+                (
+                  isRelativeCoordCmd(e) ?
+                  getTranslatedPoint1(lastCtxPos, targetPosSpecified1)
+                  : targetPosSpecified1
+                ) satisfies DOMPointReadOnly
+              ) ;
+              try {
+                switch (e.type) {
+  
+                  case "A" :
+                  case "a" :
+                    return {
+                      startPos: lastCtxPos ,
+                      originalDesc: e ,
+                      type: "A" ,
+                      larger: e.larger ,
+                      sweep: e.sweep ,
+                      radius: e.radius ,
+                      xAxisRotation: e.xAxisRotation ,
+                      target: targetPosActual ,
+                    }
+  
+                  case "M" :
+                  case "m" :
+                  case "L" :
+                  case "l" :
+                    return {
+                      startPos: lastCtxPos ,
+                      originalDesc: e ,
+                      type: ({
+                        M: "M",
+                        m: "M" ,
+                        L: "L" ,
+                        l: "L" ,
+                      } as const)[e.type] ,
+                      target: targetPosActual ,  
+                    } satisfies (
+                      SpclPathCmd
+                      & { type: "M" | "L" ; }
+                    ) ;
+
+                  case "H" :
+                  case "h" :
+                  case "V" :
+                  case "v" :
+                    {
+                      const resultingType = (
+                        ({
+                          H: "H",
+                          h: "H" ,
+                          V: "V" ,
+                          v: "V" ,
+                        } satisfies { [k in typeof e.type]: "H" | "V" ; })[e.type]
+                      ) ;
+                      return {
+                        startPos: lastCtxPos ,
+                        originalDesc: e ,
+                        type: resultingType ,
+                        target: ( 
+                          targetPosActual[(
+                            ({ H: "x", V: "y", } as const)[resultingType]
+                          )] 
+                        ) ,
+                      }
+                    }
+  
+                  case "C" :
+                  case "c" :
+                  case "S" :
+                  case "s" :
+                  case "Q" :
+                  case "q" :
+                  case "T" :
+                  case "t" :
+                    {
+                      const refPt = (
+                        (
+                          isRelativeCoordCmd(e) ? 
+                          lastCtxPos : new DOMPointReadOnly()
+                        ) satisfies DOMPointReadOnly
+                      ) ;
+                      switch (e.type) {
+                        case "C" :
+                        case "c" :
+                          return {
+                            startPos: lastCtxPos ,
+                            originalDesc: e ,
+                            type: "C" ,
+                            target: targetPosActual ,  
+                            ctrlPoints: [
+                              getTranslatedPoint1(refPt, e.ctrlPoints[0] ) ,
+                              getTranslatedPoint1(refPt, e.ctrlPoints[1] ) ,
+                            ] ,
+                          } ;
+                        case "S" :
+                        case "s" :
+                          return {
+                            startPos: lastCtxPos ,
+                            originalDesc: e ,
+                            type: "S" ,
+                            target: targetPosActual ,  
+                            ctrlPoints: [
+                              POSITION_INFERRED ,
+                              getTranslatedPoint1(refPt, e.ctrlPoints[1] ) ,
+                            ] ,
+                          } ;
+                        case "Q" :
+                        case "q" :
+                          return {
+                            startPos: lastCtxPos ,
+                            originalDesc: e ,
+                            type: "Q" ,
+                            target: targetPosActual ,  
+                            ctrlPoints: [
+                              getTranslatedPoint1(refPt, e.ctrlPoints[0] ) ,
+                            ] ,
+                          } ;
+                        case "T" :
+                        case "t" :
+                          return {
+                            startPos: lastCtxPos ,
+                            originalDesc: e ,
+                            type: "T" ,
+                            target: targetPosActual ,  
+                            ctrlPoints: [
+                            ] ,
+                          } ;
+                        default :
+                          throw TypeError(`e: ${JSON.stringify(e) }`) ;
+                      }
+                    }
+
+                  // TODO
+                  default :
+                    return {
+                      startPos: lastCtxPos ,
+                      originalDesc: e ,
+                      type: "L" ,
+                      target: targetPosActual ,
+                    } ;
+  
+                }
+              } finally {
+                lastCtxPos = targetPosActual ;
+              }
+            } )() ;
+
+          }
+        }
+      } ,
+      
+    })
+  ) ;
+}
+type IaccSrc = Pick<Extract<ParsedPathCmdInfo, { type: string ; } >, "type"> ;
+export const isRelativeCoordCmd = (
+  (e: IaccSrc) => {
+    return !!(e.type satisfies string).match(/^[a-y]$/g) ;
+  }
+) ;
+export const isAbsoluteCoordCmd = (
+  (e: IaccSrc) => {
+    return !!(e.type satisfies string).match(/^[A-Y]$/g) ;
+  }
+) ;
+
+export const getTranslatedPoint1: {
+  (p0: DOMPointReadOnly, p1: DOMPointReadOnly, ): DOMPointReadOnly ;
+} = (
+  (p0, p1,) => (
+    DOMPointReadOnly.fromPoint({
+      x: p0.x + p1.x ,
+      y: p0.y + p1.y ,
+    })
+  )
+) ;
+
 /** 
  * the position is inferred, rather than explicitly specified.
  * 
