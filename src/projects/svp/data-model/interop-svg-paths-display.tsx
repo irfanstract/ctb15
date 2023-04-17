@@ -135,7 +135,22 @@ const usePsvCodeParse = (
   }
 ) ;
 const analysePathSegmentListCtrlPointsCoords = (
-  (codeParsedNormalised: ReturnType<typeof usePsvCodeParse>["codeParsedNormalised"]) => {
+  (codeParsedNormalised: ReturnType<typeof main.toAbsoluteCoordedPathData>, ...[
+    apsOptions = {} ,
+  ] : [
+    options ?: (  
+      & {
+        onModelEdit?: (
+          util.React.Dispatch<{
+            updatedPathSegList: ReturnType<typeof main.toAbsoluteCoordedPathData> ,
+          }>
+        ) ,
+      }
+    ) ,
+  ]) => {
+    const {
+      onModelEdit = false ,
+    } = apsOptions ;
     const {
       shallSegmentsDuplicateStartPoints = false ,
     } = ((): (
