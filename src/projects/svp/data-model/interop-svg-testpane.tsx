@@ -153,8 +153,6 @@ const PathDSvEditComp = (
               descAbsolute  : arcDescAbsol, 
               // descAsIs      : arcDescAsIs,
             }) => {
-              const g = (
-                (() => {
                   const { startPos , } = arcDescAbsol ;
                   const wasRelativeCoordCmd = (
                     main.isRelativeCoordCmd(arcDescAbsol.originalDesc)
@@ -265,6 +263,36 @@ const PathDSvEditComp = (
                       } ,
                     })
                   ) ;
+                  ;
+                  return {
+                    id: arcId ,
+
+                    descAbsol: arcDescAbsol ,
+
+                    startPos ,
+                    wasRelativeCoordCmd ,
+                    type ,
+                    endPos ,
+                    ctrlPointsList ,
+                    pointsList ,
+                    
+                  } ;
+            })
+            .map(({
+              id: arcId, 
+
+              descAbsol: arcDescAbsol ,
+
+              startPos ,
+              wasRelativeCoordCmd ,
+              type ,
+              endPos ,
+              ctrlPointsList ,
+              pointsList ,
+              
+            }) => {
+              const g = (
+                (() => {
                   const pointsListPlot = (
                     pointsList
                     .map(({ pos: p, type: ctrlType, }, i) => (
