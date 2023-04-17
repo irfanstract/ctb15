@@ -48,8 +48,6 @@ export const PathDSvEditComp = (
     const mainPresentation = (
       <g
       style={{
-        ...lineStylingCssProps ,
-        ...mainStyle ,
       } }
       >
         <path 
