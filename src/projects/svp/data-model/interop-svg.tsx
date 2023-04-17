@@ -13,6 +13,18 @@ import * as util from "src/projects/svp/util" ;
 
 
 
+type IaccSrc = Pick<Extract<ParsedPathCmdInfo, { type: string ; } >, "type"> ;
+export const isRelativeCoordCmd = (
+  (e: IaccSrc) => {
+    return !!(e.type satisfies string).match(/^[a-y]$/g) ;
+  }
+) ;
+export const isAbsoluteCoordCmd = (
+  (e: IaccSrc) => {
+    return !!(e.type satisfies string).match(/^[A-Y]$/g) ;
+  }
+) ;
+
 export const getTranslatedPoint1: {
   (p0: DOMPointReadOnly, p1: DOMPointReadOnly, ): DOMPointReadOnly ;
 } = (
