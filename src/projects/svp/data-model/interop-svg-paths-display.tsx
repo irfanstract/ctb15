@@ -37,25 +37,15 @@ export const PathDSvEditComp = (
       codeParsed ,
       codeParsedNormalised ,
     } = usePsvCodeParse(code) ;
-    const lineStylingCssProps = {
-      
-      stroke: "black" ,
-      strokeWidth: 5 ,
-
-      ...mainStyle ,
-      
-    } satisfies util.React.CSSProperties ;
     const mainPresentation = (
       <g
       style={{
-        ...lineStylingCssProps ,
-        ...mainStyle ,
       } }
       >
         <path 
+        className={`${psvcCss.PFILL } ` }
         d={code }
         style={{
-          fill: "gray" ,
         } }
         />
         <g>
