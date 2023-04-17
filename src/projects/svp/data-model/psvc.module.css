@@ -17,6 +17,23 @@
 
 
 
+.PFILL {
+  --fill    : /* crayons and inks never got totally opaque */ rgba(80 96 255 / 0.5) ;
+  --stroke  : /* pencil leads never got totally black      */ rgba( 0   0  0 / 0.5) ;
+  --stroke-width: 0.25 ;
+}
+
+
+.PFILL {
+  fill    : var(--fill   ) ;
+  stroke  : var(--stroke ) ;
+  stroke-width  : var(--stroke-width ) ;
+}
+
+
+
+
+
 
 
 
