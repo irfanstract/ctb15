@@ -55,7 +55,6 @@ export const PathDSvEditComp = (
         <path 
         d={code }
         style={{
-          fill: "gray" ,
         } }
         />
         <g>
