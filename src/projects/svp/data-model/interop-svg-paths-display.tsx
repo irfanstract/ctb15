@@ -380,6 +380,8 @@ const PsvCpnCtrlPointComp = (
         y={p.y }
         width={0.3}
         height={0.3}
+        // width={`5px`}
+        // height={`5px`}
         />
       </g>
     ) ;
