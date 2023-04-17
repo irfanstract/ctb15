@@ -88,14 +88,10 @@ export const PathDSvEditComp = (
               const g = (
                 (() => {
                   const renderPointByDesc = (
-                    (({ pos: p, type: ctrlType, }) => {
+                    ((props) => {
                       return (
-                        <rect 
-                        x={p.x }
-                        y={p.y }
-                        width={lineStylingCssProps.strokeWidth ?? 0.3}
-                        height={lineStylingCssProps.strokeWidth ?? 0.3}
-                        {...(ctrlType === "ctrl" ? { stroke: `rgb(128,0,128)`, } : {} )}
+                        <PsvCpnCtrlPointComp 
+                        {...props} 
                         />
                       ) ;
                     }) satisfies {
