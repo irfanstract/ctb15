@@ -85,6 +85,21 @@ export const PathDSvEditComp = (
             }) => {
               const g = (
                 (() => {
+                  const renderPointByDesc = (
+                    (({ pos: p, type: ctrlType, }) => {
+                      return (
+                        <rect 
+                        x={p.x }
+                        y={p.y }
+                        width={lineStylingCssProps.strokeWidth ?? 0.3}
+                        height={lineStylingCssProps.strokeWidth ?? 0.3}
+                        {...(ctrlType === "ctrl" ? { stroke: `rgb(128,0,128)`, } : {} )}
+                        />
+                      ) ;
+                    }) satisfies {
+                      (desc: (typeof pointsList)[number]): util.React.ReactElement ;
+                    }
+                  ) ;
                   const pointsListPlot = (
                     pointsList
                     .map(({ pos: p, type: ctrlType, }, i) => (
