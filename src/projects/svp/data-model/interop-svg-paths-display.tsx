@@ -87,12 +87,7 @@ export const PathDSvEditComp = (
                 (() => {
                   const pointsListPlot = (
                     pointsList
-                    .map(({
-                      pos: p, 
-                      type: ctrlType, 
-                    }, i) => {
-                    ;
-                    return (
+                    .map(({ pos: p, type: ctrlType, }, i) => (
                       <Kk key={i}>
                         <rect 
                         x={p.x }
@@ -102,8 +97,7 @@ export const PathDSvEditComp = (
                         {...(ctrlType === "ctrl" ? { stroke: `rgb(128,0,128)`, } : {} )}
                         />
                       </Kk>
-                    ) ;
-                    } )
+                    ) )
                   ) ;
                   return (
                     <g>
