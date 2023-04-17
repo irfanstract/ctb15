@@ -60,6 +60,21 @@ export default (
                         <td>Descs</td>
                         <td><pre>{ JSON.stringify(main.parsePathDString(c.subject ), null, 2 ) }</pre></td>
                       </tr>
+                      <tr>
+                        <td>Graphique</td>
+                        <td>
+                          <svg
+                          viewBox={`0 0 52 52`}
+                          >
+                            <PathDSvEditComp 
+                            value={c.subject } 
+                            mainStyle={{
+                              strokeWidth: 0.33 ,
+                            }}
+                            />
+                          </svg>
+                        </td>
+                      </tr>
                     </tbody>
                     </table>
                   </li>
@@ -74,6 +89,53 @@ export default (
       pTestsPane
     ) ;
   }
+) ;
+
+/** 
+ * the editor, as SVG markup
+ */
+const PathDSvEditComp = (
+  util.React.forwardRef<unknown, (
+    & {
+      value: string ;
+      mainStyle?: util.React.CSSProperties ;
+    }
+  )>((...[
+    { 
+      value,
+      mainStyle = {} ,
+    } ,
+  ]) => {
+    const valueParsed = (
+      util.React.useMemo(() => (
+        main.parsePathDString(value)
+      ), [main, value, ] )
+    ) ;
+    const lineStylingCssProps = {
+      
+      stroke: "black" ,
+      strokeWidth: 3 ,
+
+      ...mainStyle ,
+      
+    } satisfies util.React.CSSProperties ;
+    const mainPresentation = (
+      <path 
+      d={value }
+      style={{
+        fill: "gray" ,
+        ...lineStylingCssProps ,
+        ...mainStyle ,
+      } }
+      />
+    ) ;
+    ;
+    return (
+      <g>
+        { mainPresentation }
+      </g>
+    ) ;
+  })
 ) ;
 
 
