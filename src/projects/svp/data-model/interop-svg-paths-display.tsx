@@ -90,7 +90,6 @@ export const PathDSvEditComp = (
                     .map(({
                       pos: p, 
                       type: ctrlType, 
-                      startDrag ,
                     }, i) => {
                     ;
                     return (
