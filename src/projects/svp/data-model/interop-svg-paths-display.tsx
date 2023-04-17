@@ -85,8 +85,41 @@ export const PathDSvEditComp = (
                       startDrag ,
                     }, i) => {
                     ;
+                    let currentDragging: null | ReturnType<(typeof startDrag) & {}> = null ;
                     return (
                       <Kk key={i}>
+                        <g
+                        // TODO
+                        /** 
+                         * remarks :
+                         * - Mouse Events only deals with "mouse"s ;
+                         *   Pointer Events is what deals with arbitrary "pointing device"
+                         * 
+                         */
+                        onPointerDown={evt => {
+                          console["log"](`PLPL evt coord`, evt.nativeEvent, (
+                            translateClientPos(evt.nativeEvent )
+                          )) ;
+                          currentDragging = (
+                            startDrag?.()
+                            ?? null
+                          ) ;
+                        }}
+                        onPointerMove={evt => {
+                          if (currentDragging) {
+                            const evtLocalP = (
+                              translateClientPos(evt.nativeEvent )
+                            ) ;
+                            currentDragging.moveTo({
+                              newAbsolutePos: evtLocalP ,
+                            }) ;
+                          }
+                        }}
+                        onPointerUp={() => {
+                          currentDragging?.close() ;
+                          currentDragging = null ;
+                        }}
+                        >
                         <rect 
                         x={p.x }
                         y={p.y }
@@ -94,6 +127,7 @@ export const PathDSvEditComp = (
                         height={lineStylingCssProps.strokeWidth ?? 0.3}
                         {...(ctrlType === "ctrl" ? { stroke: `rgb(128,0,128)`, } : {} )}
                         />
+                        </g>
                       </Kk>
                     ) ;
                     } )
