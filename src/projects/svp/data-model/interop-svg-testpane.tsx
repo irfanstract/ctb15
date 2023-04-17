@@ -135,6 +135,165 @@ const PathDSvEditComp = (
           fill: "gray" ,
         } }
         />
+        <g>
+          { (
+            util.Immutable.List(codeParsedNormalised) 
+            .toArray()
+            .flatMap((descAbsolute, i) => (
+              (
+                (typeof descAbsolute === "object") ? 
+                [(
+                  { id: i, descAbsolute, }
+                )] 
+                : [] 
+              ) satisfies [unknown?]
+            ) )
+            .map(({
+              id: arcId, 
+              descAbsolute  : arcDescAbsol, 
+              // descAsIs      : arcDescAsIs,
+            }) => {
+              const g = (
+                (() => {
+                  const { startPos , } = arcDescAbsol ;
+                  const wasRelativeCoordCmd = (
+                    main.isRelativeCoordCmd(arcDescAbsol.originalDesc)
+                  ) ;
+                  const { 
+                    type, 
+                    target: endPos , 
+                    ctrlPointsList = [] ,
+                  } = (
+                    ((): (
+                      & Pick<typeof arcDescAbsol, "type">
+                      & { [k in keyof Pick<typeof arcDescAbsol, "target">]: DOMPointReadOnly ; }
+                      & {
+                        ctrlPointsList?: DOMPointReadOnly[] ;
+                      }
+                    ) => {
+                      switch (arcDescAbsol.type) {
+                        case "H" :
+                        case "V" :
+                          return {
+                            type: arcDescAbsol.type ,
+                            target: (
+                              DOMPointReadOnly.fromPoint({
+                                [(
+                                  ({ H: "x", V: "y", } as const)[arcDescAbsol.type]
+                                )]: arcDescAbsol.target satisfies number ,
+                              })
+                            ) ,
+                          } ;
+
+                        case "A" :
+                          return {
+                            type: arcDescAbsol.type ,
+                            target: arcDescAbsol.target ,
+                            ctrlPointsList: (
+                              [
+                                ((): DOMPointReadOnly => {
+                                  const endPos0 = arcDescAbsol.target ;
+                                  const halfChordLen = (
+                                    0.5 * 
+                                    Math.hypot(
+                                      endPos0.x - startPos.x ,
+                                      endPos0.y - startPos.y , 
+                                    )
+                                  ) ;
+                                  // const originDisplcmt = (
+                                  //   Math.sqrt(Math.hypot() )
+                                  // ) ;
+                                  // TODO
+                                  return (
+                                    main.getTranslatedPoint1(startPos, arcDescAbsol.radius)
+                                  ) ;
+                                } )() ,
+                              ]
+                            ) ,
+                          } ;
+                          
+                        case "C" :
+                        case "S" :
+                        case "Q" :
+                        case "T" :
+                          return {
+                            type: arcDescAbsol.type ,
+                            target: (
+                              arcDescAbsol.target
+                            ) ,
+                            ctrlPointsList: (
+                              [...arcDescAbsol.ctrlPoints]
+                              .filter((v): v is DOMPointReadOnly => (
+                                v !== "auto"
+                              ) )
+                            ) ,
+                          } ;
+                          
+                        case "M" :
+                          return {
+                            type: arcDescAbsol.type ,
+                            target: (
+                              arcDescAbsol.target
+                            ) ,
+                          } ;
+                          
+                        default :
+                          return arcDescAbsol ;
+                          
+                      }
+                    } )()
+                  ) ;
+                  const pointsList = (
+                    // [
+                    //   ...(type === "M" ? [] : [startPos] ) ,
+                    //   ...ctrlPointsList ,
+                    //   endPos ,
+                    // ] satisfies DOMPointReadOnly[]
+                    Array.from({
+                      *[Symbol.iterator](): (
+                        Generator<{ type: "main" | "ctrl", pos: DOMPointReadOnly, }>
+                      ) {
+                        if (0) {
+                          if (type === "M") {
+                            yield { type: "main", pos: startPos, } ;
+                          }
+                        }
+                        for (const p of ctrlPointsList) {
+                          yield { type: "ctrl", pos: p, } ;
+                        }
+                        yield { type: "main", pos: endPos, } ;
+                      } ,
+                    })
+                  ) ;
+                  const pointsListPlot = (
+                    pointsList
+                    .map(({ pos: p, type: ctrlType, }, i) => (
+                      <Kk key={i}>
+                        <rect 
+                        x={p.x }
+                        y={p.y }
+                        width={lineStylingCssProps.strokeWidth ?? 0.3}
+                        height={lineStylingCssProps.strokeWidth ?? 0.3}
+                        {...(ctrlType === "ctrl" ? { stroke: `rgb(128,0,128)`, } : {} )}
+                        />
+                      </Kk>
+                    ) )
+                  ) ;
+                  return (
+                    <g>
+                      { pointsListPlot }
+                    </g>
+                  ) ;
+                })()
+              ) ;
+              return (
+                <Kk key={arcId } >
+                { g }
+                </Kk>
+              ) ;
+            } )
+          ) }
+        </g>
       </g>
     ) ;
     ;
