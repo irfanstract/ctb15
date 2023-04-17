@@ -57,11 +57,19 @@ export const PathDSvEditComp = (
         } }
         />
         <g>
+        { (() => {
+        ;
+        const cpnCtrlPointsInfo = (
+          analysePathSegmentListCtrlPointsCoords(codeParsedNormalised)
+        ) ;
+        return (
           <XWithLocalCoordSpaceUsageComp>
-          { ({ translateClientPos, }) => (
+          { ({ translateClientPos, }) => {
+          ;
+          return (
           <g>
           { (
-            analysePathSegmentListCtrlPointsCoords(codeParsedNormalised)
+            cpnCtrlPointsInfo
             .map(({
               id: arcId, 
 
@@ -159,8 +167,11 @@ export const PathDSvEditComp = (
             } )
           ) }
           </g>
-          ) }
+          ) ;
+          } }
           </XWithLocalCoordSpaceUsageComp>
+        ) ;
+        })() }
         </g>
       </g>
     ) ;
