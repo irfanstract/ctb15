@@ -6,6 +6,8 @@ const Kk = util.React.Fragment ;
 
 import * as main from "./interop-svg" ;
 
+import psvcCss from "./psvc.module.css" ;
+
 
 
 
