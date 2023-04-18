@@ -37,9 +37,14 @@ export const PathDSvEditComp = (
     { 
       value: code,
       mainStyle = {} ,
-      onModelEdit: propagateModelEditEvt ,
+      onModelEdit: propagateModelEditEvt0 ,
     } ,
   ]) => {
+    const propagateModelEditEvt = (
+      propagateModelEditEvt0 ?? ((evt) => {
+        console["log"](evt, evt.updatedPathSegList) ;
+      })
+    ) ;
     const {
       codeParsed ,
       codeParsedNormalised ,
@@ -208,6 +213,24 @@ const analysePathSegmentListCtrlPointsCoords = (
         descAbsolute  : arcDescAbsol, 
         // descAsIs      : arcDescAsIs,
       }) => {
+            const updateArc: {
+
+              <Value extends (
+                Extract<(
+                  (typeof codeParsedNormalised)[number]
+                ), unknown>
+              )>
+              (options: (
+                & { 
+                  newValue: Value ; 
+                }
+              )): void ;
+              
+            } = (
+              (evt) => {
+                ; // TODO
+              }
+            ) ;
             const { startPos , } = arcDescAbsol ;
             const wasRelativeCoordCmd = (
               main.isRelativeCoordCmd(arcDescAbsol.originalDesc)
@@ -273,6 +296,171 @@ const analysePathSegmentListCtrlPointsCoords = (
                   case "S" :
                   case "Q" :
                   case "T" :
+                    const csqtGetStartDragCb: {
+                      (options: (
+                        & { index: number ; }
+                      )): (
+                        (CtrlOrMainPointDesc["startDrag"] & {}) 
+                        | null
+                      ) ;
+                    } = (
+                      ({
+                        index ,
+                      }) => {
+                        const adts = (
+                          (function Dts (): (
+                            null |
+                            {
+                              afterDraggingTo: {
+                                (pos: DOMPointReadOnly): Parameters<typeof updateArc>[0]["newValue"] ;
+                              } ;
+                            }
+                          ) {
+                            ;
+                            type XCP = (
+                              (typeof arcDescAbsol)["ctrlPoints"]
+                            ) ;
+                            ;
+                            switch1 :
+                            switch (arcDescAbsol.type) {
+
+                              case "T" :
+                                break switch1 ;
+                                
+                              case "Q" : 
+                                ;
+                                {
+                                  type CpsC = (
+                                    (typeof arcDescAbsol)["ctrlPoints"]
+                                  ) ; 
+                                  const afterDraggingTo0 = (
+                                    ((): (
+                                      { (newVal: DOMPointReadOnly): CpsC ; } 
+                                      | null
+                                    ) => {
+                                      const original = arcDescAbsol.ctrlPoints;
+                                      ;
+                                      if (index === 0) return (v) => [v] ; 
+                                      ;
+                                      return null ;
+                                    })()
+                                  ) ;
+                                  const afterDraggingTo = (
+                                    afterDraggingTo0 &&
+                                    ((...[
+                                      newAbsolutePos,
+                                    ] : Parameters<typeof afterDraggingTo0> ) => {
+                                      ;
+                                      return {
+                                        ...arcDescAbsol ,
+        
+                                        ctrlPoints: (
+                                          afterDraggingTo0(newAbsolutePos)
+                                        ) ,
+                                        
+                                      } ;
+                                    })
+                                  ) ;
+                                  if (afterDraggingTo) {
+                                    return {
+                                      afterDraggingTo ,
+                                    } ;
+                                  }
+                                }
+                                break switch1 ;
+    
+                              case "C" : 
+                                ;
+                                {
+                                  type CpsC = (
+                                    (typeof arcDescAbsol)["ctrlPoints"]
+                                  ) ; 
+                                  const afterDraggingTo0 = (
+                                    ((): (
+                                      { (newVal: DOMPointReadOnly): CpsC ; } 
+                                      | null
+                                    ) => {
+                                      const original = arcDescAbsol.ctrlPoints;
+                                      ;
+                                      if (index === 0) return (v) => [          v, original[1], ] ;
+                                      if (index === 1) return (v) => [original[0],           v, ] ;
+                                      ;
+                                      return null ;
+                                    })()
+                                  ) ;
+                                  const afterDraggingTo = (
+                                    afterDraggingTo0 &&
+                                    ((...[
+                                      newAbsolutePos,
+                                    ] : Parameters<typeof afterDraggingTo0> ) => {
+                                      ;
+                                      return {
+                                        ...arcDescAbsol ,
+        
+                                        ctrlPoints: (
+                                          afterDraggingTo0(newAbsolutePos)
+                                        ) ,
+                                        
+                                      } ;
+                                    })
+                                  ) ;
+                                  if (afterDraggingTo) {
+                                    return {
+                                      afterDraggingTo ,
+                                    } ;
+                                  }
+                                }
+                                break switch1 ;
+    
+                            }
+                            ;
+                            // TODO
+                            return null ;
+                          } )()
+                        ) ;
+                        {
+                          const {
+                            afterDraggingTo = null ,
+                          } = adts || {} ;
+                          return (
+                            afterDraggingTo &&
+                            
+                            (() => {
+                              console["log"](`dragging: `, { arcDescAbsol, index, }, ) ;
+                              let newAbsolutePos1: DOMPointReadOnly | null = null ;
+                              return {
+                                
+                                close: () => {
+                                  console["log"](`dragging terminated: ` ) ;
+                                  if (newAbsolutePos1) {
+                                    const newAbsolutePos = (
+                                      newAbsolutePos1
+                                    ) ;
+                                    updateArc({
+                                      
+                                      newValue: (
+                                        afterDraggingTo(newAbsolutePos)
+                                      ) ,
+        
+                                    }) ;
+                                  }
+                                } ,
+                                
+                                moveTo: ({
+                                  newAbsolutePos ,
+                                }) => {
+                                  ;
+                                  newAbsolutePos1 = (
+                                    newAbsolutePos
+                                  ) ;
+                                } ,
+  
+                              } satisfies ReturnType<CtrlOrMainPointDesc["startDrag"] & {}> ;
+                            })
+                          ) ;
+                        }
+                      }
+                    ) ;
                     return {
                       type: arcDescAbsol.type ,
                       target: (
@@ -287,6 +475,13 @@ const analysePathSegmentListCtrlPointsCoords = (
                           return {
                             type: "ctrl" ,
                             pos: coord ,
+                            
+                            startDrag: (
+                              csqtGetStartDragCb({
+                                index: index ,
+                              })
+                              || undefined
+                            ) ,
                           } ;
                         } )
                       ) ,
