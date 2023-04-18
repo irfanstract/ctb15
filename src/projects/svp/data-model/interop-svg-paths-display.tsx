@@ -308,20 +308,9 @@ const analysePathSegmentListCtrlPointsCoords = (
               Array.from({
 
                 *[Symbol.iterator](): (
-                  Generator<{ 
-                    type: "main" | "ctrl",
-                    pos: DOMPointReadOnly,
-
-                    startDrag?: () => {
-                      moveTo: (
-                        util.React.Dispatch<(
-                          | { newAbsolutePos: DOMPointReadOnly ; }
-                        )>
-                      ) ;
-                      close(): void ;
-                    } ,
-                    
-                  }>
+                  Generator<(
+                    & CtrlOrMainPointDesc
+                  )>
                 ) {
                   if (shallSegmentsDuplicateStartPoints) {
                     if (type === "M") {
