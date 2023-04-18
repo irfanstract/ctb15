@@ -322,7 +322,10 @@ const analysePathSegmentListCtrlPointsCoords = (
                     yield { type: "ctrl", pos: p, } ;
                   }
                   
-                  yield { type: "main", pos: endPos, } ;
+                  yield { 
+                    type: "main", 
+                    pos: endPos, 
+                  } ;
                 } ,
 
               })
