@@ -27,10 +27,17 @@ export const PathDSvEditComp = (
       value: string ;
       mainStyle?: util.React.CSSProperties ;
     }
+    & {
+      onModelEdit ?: (
+        // false | 
+        Required<Parameters<typeof analysePathSegmentListCtrlPointsCoords>[1] & {}>["onModelEdit"]
+      ) ;
+    }
   )>((...[
     { 
       value: code,
       mainStyle = {} ,
+      onModelEdit: propagateModelEditEvt ,
     } ,
   ]) => {
     const {
@@ -52,7 +59,9 @@ export const PathDSvEditComp = (
         { (() => {
         ;
         const cpnCtrlPointsInfo = (
-          analysePathSegmentListCtrlPointsCoords(codeParsedNormalised)
+          analysePathSegmentListCtrlPointsCoords(codeParsedNormalised, {
+            onModelEdit: propagateModelEditEvt ,
+          } )
         ) ;
         return (
           <XWithLocalCoordSpaceUsageComp>
