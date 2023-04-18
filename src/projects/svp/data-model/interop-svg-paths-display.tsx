@@ -181,6 +181,16 @@ const analysePathSegmentListCtrlPointsCoords = (
         shallSegmentsDuplicateStartPoints?: boolean ;
       }
     ) => ({}) )() ;
+    interface CtrlOrMainPointDesc { 
+      
+      type: "main" | "ctrl",
+      pos: DOMPointReadOnly,
+
+      startDrag?: (
+        Required<util.React.ComponentPropsWithoutRef<typeof WsdComp> >["implStartDrag"]
+      ) ,
+      
+    }
     return (
       util.Immutable.List(codeParsedNormalised) 
       .toArray()
