@@ -78,6 +78,10 @@ ion-list {
   zoom: 90% ;
 }
 
+td {
+  vertical-align: text-top;
+}
+
 .JFrame {
   display: block;
   margin: 0.5em;
@@ -100,6 +104,10 @@ ion-list {
   border-radius: 0.5em;
   padding: 0.5em;
   text-align: start;
+}
+
+.SvpMain {
+  background: rgb(255, 224, 128);
 }
 
 @media (prefers-color-scheme: light) {
