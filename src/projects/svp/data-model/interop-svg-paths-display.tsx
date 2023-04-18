@@ -349,6 +349,128 @@ import {
 } from "src/projects/jsx-coord-space/in1";
 
 /** 
+ * ad-hoc component implementing dragging within usage-site coord-space
+ * 
+ */
+const WsdComp = (
+  (...[{
+    children ,
+    implStartDrag: startDrag ,
+  }] : [(
+
+    & Required<util.React.PropsWithChildren>
+
+    & {
+
+      implStartDrag?: () => {
+        moveTo: (
+          util.React.Dispatch<(
+            | { newAbsolutePos: DOMPointReadOnly ; }
+          )>
+        ) ;
+        close(): void ;
+      } ;
+
+    }
+
+  )]): util.React.ReactElement => {
+    ;
+    
+    /** 
+     * basically the non-fallacious, React-based version of
+     * `let currentDragging: null | ReturnType<(typeof startDrag) & {}> = null ;`
+     * 
+     */
+    const [currentDragging, setCurrentDragEvt, ] = (
+      util.React.useState<null | ReturnType<(typeof startDrag) & {}> >(null)
+    ) ;
+
+    ;
+
+    return (
+      <XWithLocalCoordSpaceUsageComp>
+      { ({ 
+        translateClientPos, 
+        
+      }) => {
+        ;
+
+        return (
+          <g
+          // TODO
+
+          /** 
+           * remarks :
+           * - Mouse Events only deals with "mouse"s ;
+           *   Pointer Events is what deals with arbitrary "pointing device"
+           * 
+           */
+          
+          onPointerUp={() => {
+            currentDragging?.close() ;
+            setCurrentDragEvt(null) ;
+          }}
+          {...(
+            startDrag ?
+            
+            /** 
+             * OnPress and OnMove here, OnRelease above -
+             * the OnRelease callback shall always run no matter what
+             */
+            {
+              onPointerDown: (evt) => {
+                /** 
+                 * logging
+                 */
+                console["log"](`PLPL evt coord`, evt.nativeEvent, (
+                  translateClientPos(evt.nativeEvent )
+                )) ;
+                /** 
+                 * dispatch {@link startDrag },
+                 * preferably in a race-condition-free fashion
+                 * 
+                 */
+                setCurrentDragEvt(() => (
+                  startDrag()
+                ) ) ;
+              } ,
+              
+              onPointerMove: (evt) => {
+                const evtLocalP = (
+                  translateClientPos(evt.nativeEvent )
+                ) ;
+                if (currentDragging) {
+                  currentDragging.moveTo({
+                    newAbsolutePos: evtLocalP ,
+                  }) ;
+                }
+              } ,
+
+              style: {
+                cursor: "move" ,
+              } ,
+              
+            }
+
+            : {
+              style: {} ,
+            }
+
+          )}
+
+          children={(
+            children
+          )}
+
+          />
+        ) ;
+      } }
+      </XWithLocalCoordSpaceUsageComp>
+    ) ;
+  }
+) ;
+
+/** 
  * the renderer for each main-or-ctrl point in {@link PathDSvEditComp }.
  * 
  */
