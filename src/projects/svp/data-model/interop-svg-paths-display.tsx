@@ -504,6 +504,9 @@ const PsvCpnCtrlPointComp = (
     ) ;
     ;
     return (
+      <WsdComp
+      implStartDrag={startDrag}
+      >
       <g
       className={`${psvcCss.PCTRLPOINT } ${ctrlType === "ctrl" && psvcCss.PCTRLPOINT_IS_CTRL } ${startDrag && psvcCss.PCTRLPOINT_IS_MUTABLE } ` }
       tabIndex={0}
@@ -519,6 +522,7 @@ const PsvCpnCtrlPointComp = (
         height={0.3}
         />
       </g>
+      </WsdComp>
     ) ;
   }) satisfies {
     (...args: [
