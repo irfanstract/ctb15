@@ -1,6 +1,6 @@
 
 
-import * as util from "src/utility-functions/all" ;
+import * as util from "src/projects/svp/util" ;
 
 
 
@@ -9,13 +9,42 @@ import * as util from "src/utility-functions/all" ;
 
 
 
+
+import type contentAdapters from "src/projects/svp/content-adapters/main";
+
+import * as contentHandling from "src/projects/svp/content-adapters/main";
+
+const content0: contentHandling.SupportedCaDesc = {
+  type: "g" ,
+  transform: (
+    JSON.stringify({
+      m11: 1.5 ,
+    })
+  ) ,
+  childItems: [
+    {
+      type: "path" ,
+      spec: `M 0 0 L 200 0 L 0 200 Z ` ,
+    } ,
+    {
+      type: "path" ,
+      spec: `M 0 0 L 200 0 L 200 200 Z ` ,
+    } ,
+  ] ,
+} ;
 
 export default (
   util.React.forwardRef<{}, {}>(function SvpRender() {
+    const [content, setContent] = (
+      util.React.useState<contentHandling.SupportedCaDesc>(content0)
+    ) ;
     const {
       hoverPos ,
       setHoverPos ,
     } = useXHoverState() ;
+    // const ContentComp = (
+    //   contentAdapters[content.type].render
+    // ) ;
     return (
       <div
       style={{
@@ -28,7 +57,18 @@ export default (
       viewBox={`0 0 500 250 `}
       style={{
       }}
-      children={(
+      children={( 
+        <g>
+        { contentHandling.renderEditorForCa({
+          ...content ,
+
+          onChange: ({ newValue, }) => {
+            // @ts-ignore
+            setContent(newValue) ;
+          } ,
+
+        } ) }
+        { 0 && (
         <HoverMnComp 
         onPointerLeave={() => {
           setHoverPos(false) ;
@@ -40,6 +80,8 @@ export default (
           setHoverPos(pos );
         }}
         />
+        ) }
+        </g>
       )}
       />
       <div>
@@ -55,138 +97,28 @@ export default (
           </tr>
           </tbody>
         </table>
-      </div>
-      </div>
-    ) ;
-  })
-) ;
-const HoverMnComp = (
-  util.React.forwardRef<(
-    & {}
-  ), (
-    & {
-      onPointerMoveRelative?: (
-        util.React.Dispatch<{ 
-          newPos: DOMPoint ; 
-        }> 
-      ) ;
-      onPointerLeave?: (
-        util.React.Dispatch<{ 
-        }> 
-      ) ;
-    }
-  )>(function SvpRender(...[
-    {
-      onPointerMoveRelative: propagatePointerMoveEvt = util._.identity ,
-      onPointerLeave: propagatePointerLeaveEvt = util._.identity ,
-    } ,
-  ]) {
-    const onMouseExitImpl = (
-      () => {
-        propagatePointerLeaveEvt({}) ;
-        ;
-      }
-    ) ;
-    const handlePointerMovement = (
-      (evt => {
-        evt.currentTarget.childNodes ;
-        const {
-          relativePos: evtRelativePos ,
-        } = (
-          getPointEvtCoordsInfo(evt)
-        ) ;
-        propagatePointerMoveEvt({ 
-          newPos: Object.freeze(evtRelativePos), 
-        }) ;
-        ;
-      }) satisfies util.React.Dispatch<util.React.PointerEvent<SVGGraphicsElement> >
-    ) ;
-    return (
-      <g 
-      onPointerDown={(evt) => {
-        console["info"](TypeError(`mousedown detected`) ) ;
-        if (1) {
-          ;
-          1 && console["log"](`client-pos: `, { x: evt.clientX, y: evt.clientY, }, ) ;
-          ;
-        }
-      } }
-      onPointerLeave={e => onMouseExitImpl() }
-      onPointerMove={evt => (
-        handlePointerMovement(evt)
-      ) }
-      style={{
-      }}
-      children={(
-        <circle
-        cx={0} cy={0} 
-        r={1920}
-        fill={(
-          // `rgba(64, 64, 64, ${0})`
-          "transparent"
-        )}
+        <button 
+        children={`Reset`}
+        onClick={() => (
+          setContent(content0 )
+        ) }
         />
-      )}
-      />
+      </div>
+      </div>
     ) ;
   })
 ) ;
-const useXHoverState = (
-  (() => {
-    const [hoverPos, setHoverPos] = (
-      util.React.useState<{ x: number ; y: number ; } | false>(false)
-    ) ;
-    return {
-      hoverPos ,
-      setHoverPos ,
-    } ;
-  }) satisfies (() => {})
-) ;
 
-/** 
- * {@link SVGGraphicsElement.getScreenCTM } or 
- * {@link SVGGraphicsElement.getCTM }
- * 
- */
-const getCtmImpl = (
-  ((...[target, methodName]): DOMMatrix => (
-    ( (target instanceof SVGGraphicsElement) && target[methodName]() )
-    || DOMMatrix.fromMatrix({})
-  )) satisfies {
-    (...args: [
-      receiver: Element, 
-      mode: keyof Pick<SVGGraphicsElement, "getScreenCTM" | "getCTM">
-    ]): DOMMatrix ;
-  }
-) ;
+import {
+  getCtmImpl ,
+  getPointEvtCoordsInfo ,
+  getPointEvtRelativePos ,
+} from "src/projects/svp/pointerEventHandling" ;
 
-const getPointEvtCoordsInfo = (
-  (evt: util.React.PointerEvent<SVGGraphicsElement>) => {
-    ;
-    const ctm = (
-      getCtmImpl(evt.currentTarget, "getScreenCTM")
-    ) ;
-    const clientPos = (
-      DOMPoint.fromPoint({ x: evt.clientX, y: evt.clientY, })
-    ) ;
-    const relativePos = (
-      clientPos
-      .matrixTransform(DOMMatrix.fromMatrix(ctm).inverse() )
-    ) ;
-    return {
-      ctm ,
-      clientPos ,
-      relativePos ,
-    } ;
-  }
-) ;
-const getPointEvtRelativePos = (
-  (evt: util.React.PointerEvent<SVGGraphicsElement>) => (
-    getPointEvtCoordsInfo(evt)
-    .relativePos
-  )
-) ;
-
+import {
+  HoverListeningComp as HoverMnComp ,
+} from "src/projects/svp/pointerEventHandling" ;
+import { useXHoverState, } from "src/projects/svp/content-adapters/for-g-nodes";
 
 
 
