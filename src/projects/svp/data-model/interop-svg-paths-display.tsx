@@ -406,15 +406,10 @@ const WsdComp = (
            * 
            */
           
-          onPointerUp={() => {
-            currentDragging?.close() ;
-            setCurrentDragEvt(null) ;
-          }}
           {...(
             startDrag ?
             
             /** 
-             * OnPress and OnMove here, OnRelease above -
              * the OnRelease callback shall always run no matter what
              */
             {
@@ -433,6 +428,17 @@ const WsdComp = (
                 setCurrentDragEvt(() => (
                   startDrag()
                 ) ) ;
+                {
+                  // TODO
+                  window.addEventListener("pointerup", () => (
+                    setCurrentDragEvt((currentDragging) => {
+                      currentDragging?.close() ;
+                      return null ;
+                    })
+                  ), {
+                    once: true ,
+                  }) ;
+                }
               } ,
               
               onPointerMove: (evt) => {
