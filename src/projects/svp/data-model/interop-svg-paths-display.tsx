@@ -59,7 +59,9 @@ export const PathDSvEditComp = (
         { (() => {
         ;
         const cpnCtrlPointsInfo = (
-          analysePathSegmentListCtrlPointsCoords(codeParsedNormalised)
+          analysePathSegmentListCtrlPointsCoords(codeParsedNormalised, {
+            onModelEdit: propagateModelEditEvt ,
+          } )
         ) ;
         return (
           <XWithLocalCoordSpaceUsageComp>
