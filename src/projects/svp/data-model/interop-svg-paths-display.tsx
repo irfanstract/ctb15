@@ -181,6 +181,16 @@ const analysePathSegmentListCtrlPointsCoords = (
         shallSegmentsDuplicateStartPoints?: boolean ;
       }
     ) => ({}) )() ;
+    interface CtrlOrMainPointDesc { 
+      
+      type: "main" | "ctrl",
+      pos: DOMPointReadOnly,
+
+      startDrag?: (
+        Required<util.React.ComponentPropsWithoutRef<typeof WsdComp> >["implStartDrag"]
+      ) ,
+      
+    }
     return (
       util.Immutable.List(codeParsedNormalised) 
       .toArray()
@@ -205,13 +215,13 @@ const analysePathSegmentListCtrlPointsCoords = (
             const { 
               type, 
               target: endPos , 
-              ctrlPointsList = [] ,
+              ctrlPointsCList = [] ,
             } = (
               ((): (
                 & Pick<typeof arcDescAbsol, "type">
                 & { [k in keyof Pick<typeof arcDescAbsol, "target">]: DOMPointReadOnly ; }
                 & {
-                  ctrlPointsList?: DOMPointReadOnly[] ;
+                  ctrlPointsCList?: CtrlOrMainPointDesc[] ;
                 }
               ) => {
                 switch (arcDescAbsol.type) {
@@ -233,9 +243,9 @@ const analysePathSegmentListCtrlPointsCoords = (
                     return {
                       type: arcDescAbsol.type ,
                       target: arcDescAbsol.target ,
-                      ctrlPointsList: (
+                      ctrlPointsCList: (
                         [
-                          ((): DOMPointReadOnly => {
+                          ((): CtrlOrMainPointDesc => {
                             const endPos0 = arcDescAbsol.target ;
                             const halfChordLen = (
                               0.5 * 
@@ -248,9 +258,12 @@ const analysePathSegmentListCtrlPointsCoords = (
                             //   Math.sqrt(Math.hypot() )
                             // ) ;
                             // TODO
-                            return (
-                              main.getTranslatedPoint1(startPos, arcDescAbsol.radius)
-                            ) ;
+                            return {
+                              type: "ctrl" ,
+                              pos: (
+                                main.getTranslatedPoint1(startPos, arcDescAbsol.radius)
+                              ) ,
+                            } ;
                           } )() ,
                         ]
                       ) ,
@@ -265,11 +278,17 @@ const analysePathSegmentListCtrlPointsCoords = (
                       target: (
                         arcDescAbsol.target
                       ) ,
-                      ctrlPointsList: (
+                      ctrlPointsCList: (
                         [...arcDescAbsol.ctrlPoints]
                         .filter((v): v is DOMPointReadOnly => (
                           v !== "auto"
                         ) )
+                        .map((coord, index): CtrlOrMainPointDesc => {
+                          return {
+                            type: "ctrl" ,
+                            pos: coord ,
+                          } ;
+                        } )
                       ) ,
                     } ;
                     
@@ -287,6 +306,12 @@ const analysePathSegmentListCtrlPointsCoords = (
                 }
               } )()
             ) ;
+            const ctrlPointsList = (
+              ctrlPointsCList
+              .map(desc => (
+                desc.pos
+              ) )
+            ) ;
             const pointsList = (
               
               // [
@@ -298,20 +323,9 @@ const analysePathSegmentListCtrlPointsCoords = (
               Array.from({
 
                 *[Symbol.iterator](): (
-                  Generator<{ 
-                    type: "main" | "ctrl",
-                    pos: DOMPointReadOnly,
-
-                    startDrag?: () => {
-                      moveTo: (
-                        util.React.Dispatch<(
-                          | { newAbsolutePos: DOMPointReadOnly ; }
-                        )>
-                      ) ;
-                      close(): void ;
-                    } ,
-                    
-                  }>
+                  Generator<(
+                    & CtrlOrMainPointDesc
+                  )>
                 ) {
                   if (shallSegmentsDuplicateStartPoints) {
                     if (type === "M") {
@@ -319,11 +333,14 @@ const analysePathSegmentListCtrlPointsCoords = (
                     }
                   }
 
-                  for (const p of ctrlPointsList) {
-                    yield { type: "ctrl", pos: p, } ;
+                  for (const pc of ctrlPointsCList ) {
+                    yield pc ;
                   }
                   
-                  yield { type: "main", pos: endPos, } ;
+                  yield { 
+                    type: "main", 
+                    pos: endPos, 
+                  } ;
                 } ,
 
               })
